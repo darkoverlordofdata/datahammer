@@ -1,3 +1,14 @@
+# == Malleus ==
+
+## The best security is security that is easy to use
+
+### Why? Because it get's used.
+
+Malleus makes it easy to protect your personal information when you sell or dispose of your android phone.
+
+How many people actually follow Step three: Load dummy data from the article
+http://www.cnet.com/how-to/the-best-way-to-completely-wipe-your-android-device/?
+
 
 
       __  __       _ _
@@ -8,8 +19,8 @@
      |_|  |_|\__,_|_|_|\___|\__,_|___/
 
 
+Project status - pre alpha.
 
-==< Malleus >==
 
 
 # MIT License
