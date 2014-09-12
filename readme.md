@@ -4,10 +4,13 @@
 
 ### Why? Because it get's used.
 
+CNet has a great article on reducing your exposure to identity theft -
+http://www.cnet.com/how-to/the-best-way-to-completely-wipe-your-android-device/
+
+But how many people will actually follow Step three: Load dummy data?
+
 Malleus makes it easy to protect your personal information when you sell or dispose of your android phone.
 
-How many people actually follow Step three: Load dummy data from the article
-http://www.cnet.com/how-to/the-best-way-to-completely-wipe-your-android-device/?
 
 
 
@@ -15,9 +18,8 @@ http://www.cnet.com/how-to/the-best-way-to-completely-wipe-your-android-device/?
      |  \/  |     | | |
      | \  / | __ _| | | ___ _   _ ___
      | |\/| |/ _` | | |/ _ \ | | / __|
-     | |  | | (_| | | |  __/ |_| \__ \
-     |_|  |_|\__,_|_|_|\___|\__,_|___/
-
+     | |  | | (_| | | |  __/ |_| \__ \      the last software 
+     |_|  |_|\__,_|_|_|\___|\__,_|___/      your android phone will use!
 
 Project status - pre alpha.
 
