@@ -2,7 +2,12 @@
 <resources>
 
     <string name="app_name">Data Hammer</string>
-    <!--<string name="hello_world">Hello world!</string>-->
+    <string name="title_stats">Stats: </string>
+    <string name="label_total_memory">Total Memory: </string>
+    <string name="label_free_memory">Free Memory: </string>
+    <string name="label_busy_memory">Busy Memory: </string>
+    <string name="label_ext_storage">External storage: </string>
+    <string name="title_files">Files: </string>
     <string name="action_settings">Settings</string>
 
 </resources>

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
 import android.support.v4.app.Fragment;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,6 +64,7 @@ public class HammerFragment extends Fragment {
 
         filesList = (TextView)rootView.findViewById(R.id.files_list);
         filesList.setText(file_list);
+        filesList.setMovementMethod(new ScrollingMovementMethod());
 
         return rootView;
     }
