@@ -1,0 +1,126 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".HammerActivity$HammerFragment">
+
+    <TextView
+        android:id="@+id/label_stats"
+        android:text="Stats:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        style="@style/TextAppearance.AppCompat.Widget.ActionMode.Title"
+        android:textStyle="bold" />
+
+    <TextView
+        android:text="Total Memory: "
+        android:id="@+id/total_memory"
+        android:layout_below="@+id/label_stats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="4dp" />
+
+    <TextView
+        android:text="0"
+        android:id="@+id/total_value"
+        android:layout_below="@+id/label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="4dp" />
+
+    <TextView
+        android:text="Free Memory: "
+        android:id="@+id/free_memory"
+        android:layout_below="@+id/total_memory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="4dp" />
+
+    <TextView
+        android:text="0"
+        android:id="@+id/free_value"
+        android:layout_below="@+id/total_memory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="4dp" />
+
+    <TextView
+        android:text="Busy Memory: "
+        android:id="@+id/busy_memory"
+        android:layout_below="@+id/free_memory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="4dp" />
+
+    <TextView
+        android:text="0"
+        android:id="@+id/busy_value"
+        android:layout_below="@+id/free_memory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="4dp" />
+
+    <TextView
+        android:text="External storage: "
+        android:id="@+id/ext_storage"
+        android:layout_below="@+id/busy_memory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="4dp" />
+
+    <TextView
+        android:text="/"
+        android:id="@+id/ext_value"
+        android:layout_below="@+id/busy_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="4dp" />
+
+    <TextView
+        android:id="@+id/label_files"
+        android:layout_below="@+id/ext_value"
+        android:text="Files:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        style="@style/TextAppearance.AppCompat.Widget.ActionMode.Title"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/files_list"
+        android:layout_below="@+id/label_files"
+        android:text="test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/ext_value"
+        android:layout_alignEnd="@+id/ext_value"
+        android:layout_alignLeft="@+id/label_files"
+        android:layout_alignStart="@+id/label_files"
+        android:scrollbarAlwaysDrawVerticalTrack="true" />
+
+
+</RelativeLayout>
