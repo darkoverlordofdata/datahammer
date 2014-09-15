@@ -17,9 +17,9 @@ Malleus makes it easy to protect your personal information when you sell or disp
       __  __       _ _
      |  \/  |     | | |
      | \  / | __ _| | | ___ _   _ ___
-     | |\/| |/ _` | | |/ _ \ | | / __|
-     | |  | | (_| | | |  __/ |_| \__ \      the last software 
-     |_|  |_|\__,_|_|_|\___|\__,_|___/      your android phone will use!
+     | |\/| |/ _` | | |/ _ \ | | / __|     the last software
+     | |  | | (_| | | |  __/ |_| \__ \      your android phone  
+     |_|  |_|\__,_|_|_|\___|\__,_|___/       will ever use!
 
 Project status - pre alpha.
 
