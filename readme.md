@@ -1,3 +1,10 @@
+      __  __       _ _
+     |  \/  |     | | |
+     | \  / | __ _| | | ___ _   _ ___
+     | |\/| |/ _` | | |/ _ \ | | / __|     the last software
+     | |  | | (_| | | |  __/ |_| \__ \      your android phone  
+     |_|  |_|\__,_|_|_|\___|\__,_|___/       will ever use!
+
 # == Malleus ==
 
 ## The best security is security that is easy to use
@@ -14,16 +21,9 @@ dispose of your android phone.
 Malleus performs a filesystem level format, overwriting all unused space with random
 data to prevent access to the data that used to be there.
 
-Read the wikipedia article on (data remanence) [http://en.wikipedia.org/wiki/Data_remanence#Overwriting]
+Read the wikipedia article on data remanence [http://en.wikipedia.org/wiki/Data_remanence#Overwriting]
 
 
-
-      __  __       _ _
-     |  \/  |     | | |
-     | \  / | __ _| | | ___ _   _ ___
-     | |\/| |/ _` | | |/ _ \ | | / __|     the last software
-     | |  | | (_| | | |  __/ |_| \__ \      your android phone  
-     |_|  |_|\__,_|_|_|\___|\__,_|___/       will ever use!
 
 Project status - beta.
 
