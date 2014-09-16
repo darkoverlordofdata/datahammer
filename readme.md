@@ -3,7 +3,7 @@
      | \  / | __ _| | | ___ _   _ ___
      | |\/| |/ _` | | |/ _ \ | | / __|     the last software
      | |  | | (_| | | |  __/ |_| \__ \      your android phone  
-     |_|  |_|\__,_|_|_|\___|\__,_|___/       will ever use!
+     |_|  |_|\__,_|_|_|\___|\__,_|___/       should ever use!
 
 # == Malleus ==
 
@@ -11,21 +11,21 @@
 
 ### Why? Because it get's used.
 
+When you are done with your adroid phone, you may want to sell or gift it.
+Before doing so, it is recommended to perform a factory reset to protect your personal data.
+After you've done that, install and run Malleus.
+
 CNet has a great article on reducing your exposure to identity theft -
 http://www.cnet.com/how-to/the-best-way-to-completely-wipe-your-android-device/
 
 But how many people will actually follow Step three: Load dummy data?
 
-Malleus makes it easy to protect your personal information when you sell or 
-dispose of your android phone.
-Malleus performs a filesystem level format, overwriting all unused space with random
-data to prevent access to the data that used to be there.
+## Project status - beta
 
-Read the wikipedia article on data remanence [http://en.wikipedia.org/wiki/Data_remanence#Overwriting]
+The beta version of Malleus keeps it simple, and does 1 thing 
 
+- Overwrite all of your unused diskspace with random data.
 
-
-Project status - beta.
 
 ## Disclaimer: 
 
