@@ -66,7 +66,7 @@ public class DeviceModel implements Serializable {
         }
 
         StatFs statFs;
-        File root = Environment.getRootDirectory();
+        File root = Environment.getDataDirectory();
         statFs = new StatFs(rootPath = root.getAbsolutePath());
         rootTotal  = (statFs.getBlockCount() * statFs.getBlockSize());
         rootFree   = (statFs.getAvailableBlocks() * statFs.getBlockSize());
@@ -106,6 +106,7 @@ public class DeviceModel implements Serializable {
      */
     private static String humanize (long size)
     {
+
         long Kb = 1  * 1024;
         long Mb = Kb * 1024;
         long Gb = Mb * 1024;

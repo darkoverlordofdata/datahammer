@@ -14,6 +14,7 @@
  */
 package com.darkoverlordofdata.malleus;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.support.v7.app.ActionBarActivity;
@@ -21,6 +22,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 
 /**
@@ -53,7 +55,10 @@ public class HammerActivity extends ActionBarActivity {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, view)
                     .commit();
+
         }
+        DeleteFileAsync task = new DeleteFileAsync().inject(model, view, this);
+        task.execute();
     }
 
 
@@ -82,7 +87,8 @@ public class HammerActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_about) {
+            showAbout();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -120,6 +126,24 @@ public class HammerActivity extends ActionBarActivity {
 
         WriteFileAsync task = new WriteFileAsync().inject(model, view, this);
         task.execute();
+    }
+
+    protected void showAbout() {
+        // Inflate the about message contents
+        View messageView = getLayoutInflater().inflate(R.layout.about, null, false);
+
+        // When linking text, force to always use default color. This works
+        // around a pressed color state bug.
+        TextView textView = (TextView) messageView.findViewById(R.id.about_credits);
+        int defaultColor = textView.getTextColors().getDefaultColor();
+        textView.setTextColor(defaultColor);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        //builder.setIcon(R.drawable.app_icon);
+        builder.setTitle(R.string.app_name);
+        builder.setView(messageView);
+        builder.create();
+        builder.show();
     }
 
 }

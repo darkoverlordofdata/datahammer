@@ -95,6 +95,7 @@
         android:textColor="@color/Cornsilk"
         style="@style/value"/>
 
+
     <!-- Status -->
     <TextView
         android:layout_width="wrap_content"

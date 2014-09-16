@@ -41,6 +41,9 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
     HammerFragment view;
     HammerActivity ctrl;
     Random rnd;
+    int total;
+    long startTime;
+    long endTime;
 
     /**
      * Acts as the constructor to inject dependencies
@@ -67,9 +70,12 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
     @Override
     protected String doInBackground(Void... params) {
 
+        startTime = System.currentTimeMillis();
+        total = 0;
         if (model.isWriteable)
-            writeExternal();
-        writeInternal();
+            total += writeExternal();
+        total += writeInternal();
+        endTime = System.currentTimeMillis();
         return null;
     }
 
@@ -232,7 +238,11 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
      */
     @Override
     protected void onPostExecute(String result) {
+        long seconds = (endTime - startTime) / 1000;
+        String duration = String.format("%02d:%02d", seconds / 60, seconds % 60);
+
         ctrl.dismissDialog(HammerActivity.DIALOG_WRITE_PROGRESS);
+        view.status.setText("Shredded "+(total*4)+"kb in "+duration+" mm:ss");
     }
 
 
