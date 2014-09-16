@@ -99,7 +99,7 @@ public class HammerActivity extends ActionBarActivity {
         switch (id) {
             case DIALOG_WRITE_PROGRESS:
                 progress = new ProgressDialog(this, R.style.MalleusDialog);
-                progress.setMessage("Overwriting the hard drive..");
+                progress.setMessage("Shredding...");
                 progress.setIndeterminate(false);
                 progress.setMax(1024);
                 progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);

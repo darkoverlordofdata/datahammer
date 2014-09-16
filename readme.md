@@ -9,8 +9,12 @@ http://www.cnet.com/how-to/the-best-way-to-completely-wipe-your-android-device/
 
 But how many people will actually follow Step three: Load dummy data?
 
-Malleus makes it easy to protect your personal information when you sell or dispose of your android phone.
+Malleus makes it easy to protect your personal information when you sell or 
+dispose of your android phone.
+Malleus performs a filesystem level format, overwriting all unused space with random
+data to prevent access to the data that used to be there.
 
+Read the wikipedia article on (data remanence) [http://en.wikipedia.org/wiki/Data_remanence#Overwriting]
 
 
 
@@ -21,9 +25,14 @@ Malleus makes it easy to protect your personal information when you sell or disp
      | |  | | (_| | | |  __/ |_| \__ \      your android phone  
      |_|  |_|\__,_|_|_|\___|\__,_|___/       will ever use!
 
-Project status - pre alpha.
+Project status - beta.
 
+## Disclaimer: 
 
+    Malleus has not been verified by internal or external entities. 
+    The code may be still of beta quality and may not fully prevent
+    recovery of personal information.
+    
 
 # MIT License
 
