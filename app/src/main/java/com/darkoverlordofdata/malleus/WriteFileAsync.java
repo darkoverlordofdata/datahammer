@@ -1,5 +1,20 @@
+/**
+ +--------------------------------------------------------------------+
+ | WriteFileAsync.java
+ +--------------------------------------------------------------------+
+ | Copyright DarkOverlordOfData (c) 2014
+ +--------------------------------------------------------------------+
+ |
+ | This file is a part of Malleus
+ |
+ | Malleus is free software; you can copy, modify, and distribute
+ | it under the terms of the MIT License
+ |
+ +--------------------------------------------------------------------+
+ */
 package com.darkoverlordofdata.malleus;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -46,29 +61,91 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
     @Override
     protected String doInBackground(Void... params) {
 
+        String path = "malleus.txt";
+        Context ctx = ctrl.getApplicationContext();
+        boolean ok = false;
+        OutputStream bw = null;
+        FileOutputStream fw;
+        int k = 0;
+
+        /**
+         * Internal Storage
+         */
         try {
-            String path;
+            fw = ctx.openFileOutput(path, Context.MODE_PRIVATE);
+            bw = new BufferedOutputStream(fw);
+            ok = true;
+        } catch (IOException e) {
+            Log.e("doInBackground", e.getMessage());
+        }
 
-            for (int i=0; i<1024; i++) {
-
-                path = model.extPath + "/Download/malleus/file" + i + ".txt";
+        /** Keep writing until there is an error */
+        try {
+            while (ok) {
                 new Random().nextBytes(buffer);
-
-                File file = new File(path);
-                // If file does not exists, then create it
-                if (!file.exists()) {
-                    file.createNewFile();
-                }
-                FileOutputStream fw = new FileOutputStream(file.getAbsoluteFile());
-                OutputStream bw = new BufferedOutputStream(fw);
                 bw.write(buffer);
-                bw.close();
-                publishProgress((Integer)i);
+                publishProgress((Integer) k++);
             }
         } catch (IOException e) {
-            Log.e("error", e.getMessage());
+            Log.i("doInBackground", "Finished writing "+k+" internal storage blocks");
+        } catch (NullPointerException e) {
+            Log.e("doInBackground", e.getMessage());
+        }
+
+        /** Close the file */
+        if (ok) {
+            try {
+                bw.close();
+            } catch (IOException e) {
+                Log.e("doInBackground", e.getMessage());
+            } catch (NullPointerException e) {
+                Log.e("doInBackground", e.getMessage());
+            }
+        }
+
+        if (!model.isWriteable) return null;
+        /**
+         * SD Card / External Storage
+         */
+        path = model.extPath + "/malleus.txt";
+        ok = false;
+
+        /** Open a file */
+        try {
+            File file = new File(path);
+            if (!file.exists()) ok = file.createNewFile();
+            fw = new FileOutputStream(file.getAbsoluteFile());
+            bw = new BufferedOutputStream(fw);
+            ok = true;
+        } catch (IOException e) {
+            Log.e("doInBackground", e.getMessage());
+        }
+
+        /** Keep writing until there is an error */
+        try {
+            while (ok) {
+                new Random().nextBytes(buffer);
+                bw.write(buffer);
+                publishProgress((Integer) k++);
+            }
+        } catch (IOException e) {
+            Log.i("doInBackground", "Finished writing "+k+" external storage blocks");
+        } catch (NullPointerException e) {
+            Log.e("doInBackground", e.getMessage());
+        }
+
+        /** Close the file */
+        if (ok) {
+            try {
+                bw.close();
+            } catch (IOException e) {
+                Log.e("doInBackground", e.getMessage());
+            } catch (NullPointerException e) {
+                Log.e("doInBackground", e.getMessage());
+            }
         }
         return null;
+
     }
 
     /**

@@ -39,4 +39,23 @@
         <item name="android:fillViewport">true</item>
     </style>
 
+
+    <style name="CustomAlertDialogStyle">
+        <item name="android:bottomBright">@color/Sienna</item>
+        <item name="android:bottomDark">@color/Sienna</item>
+        <item name="android:bottomMedium">@color/Sienna</item>
+        <item name="android:centerBright">@color/Sienna</item>
+        <item name="android:centerDark">@color/Sienna</item>
+        <item name="android:centerMedium">@color/Sienna</item>
+        <item name="android:fullBright">@color/Sienna</item>
+        <item name="android:fullDark">@color/Sienna</item>
+        <item name="android:topBright">@color/Sienna</item>
+        <item name="android:topDark">@color/Sienna</item>
+    </style>
+
+    <style name="MalleusDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:alertDialogStyle">@style/CustomAlertDialogStyle</item>
+        <item name="android:textColorPrimary">@color/Cornsilk</item>
+    </style>
+
 </resources>

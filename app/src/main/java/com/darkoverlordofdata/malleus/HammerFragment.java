@@ -1,3 +1,17 @@
+/**
+ +--------------------------------------------------------------------+
+ | HammerFragment.java
+ +--------------------------------------------------------------------+
+ | Copyright DarkOverlordOfData (c) 2014
+ +--------------------------------------------------------------------+
+ |
+ | This file is a part of Malleus
+ |
+ | Malleus is free software; you can copy, modify, and distribute
+ | it under the terms of the MIT License
+ |
+ +--------------------------------------------------------------------+
+ */
 package com.darkoverlordofdata.malleus;
 
 import android.os.Bundle;
@@ -64,8 +78,8 @@ public class HammerFragment extends Fragment {
         extUsed.setText(model.extUsedKb);
         extFree.setText(model.extFreeKb);
         status.append("External Media:"
-                +" readable="+model.externalStorageAvailable
-                +", writable="+model.externalStorageWriteable);
+                +" readable="+model.isAvailable
+                +", writable="+model.isWriteable);
 
         return rootView;
     }

@@ -1,3 +1,17 @@
+/**
+ +--------------------------------------------------------------------+
+ | DeviceModel.java
+ +--------------------------------------------------------------------+
+ | Copyright DarkOverlordOfData (c) 2014
+ +--------------------------------------------------------------------+
+ |
+ | This file is a part of Malleus
+ |
+ | Malleus is free software; you can copy, modify, and distribute
+ | it under the terms of the MIT License
+ |
+ +--------------------------------------------------------------------+
+ */
 package com.darkoverlordofdata.malleus;
 
 import android.os.Environment;
@@ -15,35 +29,40 @@ public class DeviceModel implements Serializable {
     long rootTotal;         //  total bytes available
     long rootUsed;          //  bytes used
     long rootFree;          //  bytes free
-    String rootTotalKb;
-    String rootUsedKb;
-    String rootFreeKb;
+    String rootTotalKb;     //  readable total bytes available
+    String rootUsedKb;      //  readable bytes used
+    String rootFreeKb;      //  readable bytes free
 
     String extPath;         //  path to folder
     long extTotal;          //  total bytes available
     long extUsed;           //  bytes used
     long extFree;           //  bytes free
-    String extTotalKb;
-    String extUsedKb;
-    String extFreeKb;
+    String extTotalKb;      //  readable total bytes available
+    String extUsedKb;       //  readable bytes used
+    String extFreeKb;       //  readable bytes free
 
-    boolean externalStorageAvailable = false;
-    boolean externalStorageWriteable = false;
+    boolean isAvailable;    //  SD card available
+    boolean isWriteable;    //  SD card writeable
 
+    /**
+     * DeviceModel
+     * wraps the phone file system
+     * 
+     */
     public DeviceModel() {
 
         String state = Environment.getExternalStorageState();
 
         if (Environment.MEDIA_MOUNTED.equals(state)) {
             // Can read and write the media
-            externalStorageAvailable = externalStorageWriteable = true;
+            isAvailable = isWriteable = true;
         } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
             // Can only read the media
-            externalStorageAvailable = true;
-            externalStorageWriteable = false;
+            isAvailable = true;
+            isWriteable = false;
         } else {
             // Can't read or write
-            externalStorageAvailable = externalStorageWriteable = false;
+            isAvailable = isWriteable = false;
         }
 
         StatFs statFs;
@@ -52,9 +71,9 @@ public class DeviceModel implements Serializable {
         rootTotal  = (statFs.getBlockCount() * statFs.getBlockSize());
         rootFree   = (statFs.getAvailableBlocks() * statFs.getBlockSize());
         rootUsed   = rootTotal - rootFree;
-        rootTotalKb = bytesToHuman(rootTotal);
-        rootFreeKb = bytesToHuman(rootFree);
-        rootUsedKb = bytesToHuman(rootUsed);
+        rootTotalKb = humanize(rootTotal);
+        rootFreeKb = humanize(rootFree);
+        rootUsedKb = humanize(rootUsed);
 
 
         File ext = Environment.getExternalStorageDirectory();
@@ -62,18 +81,30 @@ public class DeviceModel implements Serializable {
         extTotal  = (statFs.getBlockCount() * statFs.getBlockSize());
         extFree   = (statFs.getAvailableBlocks() * statFs.getBlockSize());
         extUsed   = extTotal - extFree;
-        extTotalKb = bytesToHuman(extTotal);
-        extFreeKb = bytesToHuman(extFree);
-        extUsedKb = bytesToHuman(extUsed);
+        extTotalKb = humanize(extTotal);
+        extFreeKb = humanize(extFree);
+        extUsedKb = humanize(extUsed);
 
     }
 
-    public static String floatForm (double d) {
+    /**
+     * Format with 2 decimal places
+     *
+     * @param d
+     * @return
+     */
+    private static String format2(double d) {
         return new DecimalFormat("#.00").format(d);
     }
 
 
-    public static String bytesToHuman (long size)
+    /**
+     * Humanize the file size
+     *
+     * @param size
+     * @return
+     */
+    private static String humanize (long size)
     {
         long Kb = 1  * 1024;
         long Mb = Kb * 1024;
@@ -82,13 +113,13 @@ public class DeviceModel implements Serializable {
         long Pb = Tb * 1024;
         long Eb = Pb * 1024;
 
-        if (size <  Kb)                 return floatForm(        size     ) + " byte";
-        if (size >= Kb && size < Mb)    return floatForm((double)size / Kb) + " Kb";
-        if (size >= Mb && size < Gb)    return floatForm((double)size / Mb) + " Mb";
-        if (size >= Gb && size < Tb)    return floatForm((double)size / Gb) + " Gb";
-        if (size >= Tb && size < Pb)    return floatForm((double)size / Tb) + " Tb";
-        if (size >= Pb && size < Eb)    return floatForm((double)size / Pb) + " Pb";
-        if (size >= Eb)                 return floatForm((double)size / Eb) + " Eb";
+        if (size <  Kb)                 return format2(        size     ) + " byte";
+        if (size >= Kb && size < Mb)    return format2((double)size / Kb) + " Kb";
+        if (size >= Mb && size < Gb)    return format2((double)size / Mb) + " Mb";
+        if (size >= Gb && size < Tb)    return format2((double)size / Gb) + " Gb";
+        if (size >= Tb && size < Pb)    return format2((double)size / Tb) + " Tb";
+        if (size >= Pb && size < Eb)    return format2((double)size / Pb) + " Pb";
+        if (size >= Eb)                 return format2((double)size / Eb) + " Eb";
 
         return "???";
     }

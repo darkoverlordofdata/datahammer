@@ -11,5 +11,6 @@
     <string name="store_loc">External storage: </string>
     <string name="title_files">Files: </string>
     <string name="action_settings">Settings</string>
+    <string name="yellow">#ffff00</string>
 
 </resources>

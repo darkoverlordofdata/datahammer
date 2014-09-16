@@ -1,3 +1,17 @@
+/**
+ +--------------------------------------------------------------------+
+ | HammerActivity.java
+ +--------------------------------------------------------------------+
+ | Copyright DarkOverlordOfData (c) 2014
+ +--------------------------------------------------------------------+
+ |
+ | This file is a part of Malleus
+ |
+ | Malleus is free software; you can copy, modify, and distribute
+ | it under the terms of the MIT License
+ |
+ +--------------------------------------------------------------------+
+ */
 package com.darkoverlordofdata.malleus;
 
 import android.app.Dialog;
@@ -84,11 +98,11 @@ public class HammerActivity extends ActionBarActivity {
     protected Dialog onCreateDialog(int id) {
         switch (id) {
             case DIALOG_WRITE_PROGRESS:
-                progress = new ProgressDialog(this);
-                progress.setMessage("Hammering the hard drive..");
+                progress = new ProgressDialog(this, R.style.MalleusDialog);
+                progress.setMessage("Overwriting the hard drive..");
                 progress.setIndeterminate(false);
                 progress.setMax(1024);
-                progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 progress.setCancelable(false);
                 progress.show();
                 return progress;
