@@ -30,11 +30,14 @@ import java.util.Random;
  */
 public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
 
+    final int CHUNK_SIZE    = 4096;     //  write out sector sized chunks
+    boolean freeMemory      = true;     //  delete the files when done
+
+    byte[] buffer = new byte[CHUNK_SIZE];
     DeviceModel model;
     HammerFragment view;
     HammerActivity ctrl;
     Random rnd;
-    byte[] buffer = new byte[1024];
 
     /**
      * Acts as the constructor to inject dependencies
@@ -53,7 +56,7 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
     }
 
     /**
-     * Write files
+     * Fill up the hard drives with random bytes.
      * 
      * @param aurl
      * @return
@@ -61,93 +64,132 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
     @Override
     protected String doInBackground(Void... params) {
 
-        String path = "malleus.txt";
+        if (model.isWriteable)
+            writeExternal();
+        writeInternal();
+        return null;
+    }
+
+    /**
+     * Write Internal Storage
+     */
+    private int writeInternal() {
+
         Context ctx = ctrl.getApplicationContext();
-        boolean ok = false;
+        FileOutputStream fw = null;
         OutputStream bw = null;
-        FileOutputStream fw;
-        int k = 0;
+        String path = "malleus.d16a";
+        int count = 0;
 
         /**
-         * Internal Storage
-         */
+         * Try to open a file
+         * */
         try {
             fw = ctx.openFileOutput(path, Context.MODE_PRIVATE);
             bw = new BufferedOutputStream(fw);
-            ok = true;
         } catch (IOException e) {
             Log.e("doInBackground", e.getMessage());
         }
-
-        /** Keep writing until there is an error */
-        try {
-            while (ok) {
-                new Random().nextBytes(buffer);
-                bw.write(buffer);
-                publishProgress((Integer) k++);
-            }
-        } catch (IOException e) {
-            Log.i("doInBackground", "Finished writing "+k+" internal storage blocks");
-        } catch (NullPointerException e) {
-            Log.e("doInBackground", e.getMessage());
-        }
-
-        /** Close the file */
-        if (ok) {
-            try {
-                bw.close();
-            } catch (IOException e) {
-                Log.e("doInBackground", e.getMessage());
-            } catch (NullPointerException e) {
-                Log.e("doInBackground", e.getMessage());
-            }
-        }
-
-        if (!model.isWriteable) return null;
         /**
-         * SD Card / External Storage
-         */
-        path = model.extPath + "/malleus.txt";
-        ok = false;
-
-        /** Open a file */
+         * Write random bytes until we
+         * run out of space on the disk
+         * */
         try {
-            File file = new File(path);
-            if (!file.exists()) ok = file.createNewFile();
-            fw = new FileOutputStream(file.getAbsoluteFile());
-            bw = new BufferedOutputStream(fw);
-            ok = true;
-        } catch (IOException e) {
-            Log.e("doInBackground", e.getMessage());
-        }
-
-        /** Keep writing until there is an error */
-        try {
-            while (ok) {
+            while (!(bw == null)) {
                 new Random().nextBytes(buffer);
                 bw.write(buffer);
-                publishProgress((Integer) k++);
+                fw.getFD().sync();
+                publishProgress((Integer) count++);
             }
         } catch (IOException e) {
-            Log.i("doInBackground", "Finished writing "+k+" external storage blocks");
+            Log.i("doInBackground", "Finished writing "+count+" internal storage blocks");
         } catch (NullPointerException e) {
             Log.e("doInBackground", e.getMessage());
         }
 
-        /** Close the file */
-        if (ok) {
+        /**
+         * Close the file
+         * */
+        if (!(bw == null)) {
             try {
-                bw.close();
+                /**
+                 * @see http://docs.oracle.com/javase/7/docs/api/java/io/OutputStream.html#method_detail
+                 * The close method of OutputStream does nothing.
+                 */
+                fw.close();
             } catch (IOException e) {
-                Log.e("doInBackground", e.getMessage());
+                Log.i("doInBackground", e.getMessage());
             } catch (NullPointerException e) {
                 Log.e("doInBackground", e.getMessage());
             }
         }
-        return null;
-
+        if (freeMemory && count > 0) {
+            ctx.deleteFile(path);
+        }
+        return count;
     }
 
+    /**
+     * Write SD Card / External Storage
+     */
+    private int writeExternal() {
+
+        FileOutputStream fw = null;
+        OutputStream bw = null;
+        String path = model.extPath + "/malleus.d16a";
+        int count = 0;
+        File file = new File(path);
+
+        /**
+         * Try to open a file
+         * */
+        try {
+            if (!file.exists()) file.createNewFile();
+            fw = new FileOutputStream(file.getAbsoluteFile());
+            bw = new BufferedOutputStream(fw);
+        } catch (IOException e) {
+            Log.e("doInBackground", e.getMessage());
+        }
+
+        /**
+         * Write random bytes until we
+         * run out of space on the disk
+         * */
+        try {
+            while (!(bw == null)) {
+                new Random().nextBytes(buffer);
+                bw.write(buffer);
+                fw.getFD().sync();
+                publishProgress((Integer) count++);
+            }
+        } catch (IOException e) {
+            Log.i("doInBackground", "Finished writing "+count+" external storage blocks");
+        } catch (NullPointerException e) {
+            Log.e("doInBackground", e.getMessage());
+        }
+
+        /**
+         * Close the file
+         * */
+        if (!(bw == null)) {
+            try {
+                /**
+                 * @see http://docs.oracle.com/javase/7/docs/api/java/io/OutputStream.html#method_detail
+                 * The close method of OutputStream does nothing.
+                 */
+                fw.close();
+            } catch (IOException e) {
+                Log.i("doInBackground", e.getMessage());
+            } catch (NullPointerException e) {
+                Log.e("doInBackground", e.getMessage());
+            }
+        }
+        if (freeMemory && count > 0) {
+            if (file.exists())
+                file.delete();
+        }
+        return count;
+    }
     /**
      * Before: Display the Progress Bar
      */
