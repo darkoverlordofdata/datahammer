@@ -16,6 +16,7 @@ package com.darkoverlordofdata.malleus;
 
 import android.os.Environment;
 import android.os.StatFs;
+import android.util.Log;
 
 import java.io.File;
 import java.io.Serializable;
@@ -51,6 +52,7 @@ public class DeviceModel implements Serializable {
      */
     public DeviceModel() {
 
+
         String state = Environment.getExternalStorageState();
 
         if (Environment.MEDIA_MOUNTED.equals(state)) {
@@ -64,6 +66,21 @@ public class DeviceModel implements Serializable {
             // Can't read or write
             isAvailable = isWriteable = false;
         }
+        if (Integer.valueOf(android.os.Build.VERSION.SDK) > 10) {
+            /**
+             * isExternalStorageEmulated = Emulated primar, like my Nexus 4
+             * Note: This is a typical configuration for a device with single
+             * external storage device which is backed by internal storage on the device.
+             * This means that we only need to write over the internal storage because
+             * they both map to the same memory card.
+             *
+             * @see https://source.android.com/devices/tech/storage/config-example.html
+             */
+            if (Environment.isExternalStorageEmulated()) {
+                isAvailable = isWriteable = false;
+            }
+        }
+
 
         StatFs statFs;
         File root = Environment.getDataDirectory();

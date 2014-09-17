@@ -114,6 +114,7 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
                         bw.write(buffer);
                         fw.getFD().sync();
                         publishProgress((Integer) count++);
+                        if (count>10) break;
                     }
                 } catch (IOException e) {
                     Log.i("doInBackground", "Finished writing " + count + " internal storage blocks");
@@ -183,6 +184,7 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
                         bw.write(buffer);
                         fw.getFD().sync();
                         publishProgress((Integer) count++);
+                        if (count>10) break;
                     }
                 } catch (IOException e) {
                     Log.i("doInBackground", "Finished writing " + count + " external storage blocks");
@@ -230,6 +232,7 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
      */
     protected void onProgressUpdate(Integer... progress) {
         ctrl.progress.setProgress(progress[0]);
+        Log.i("onProgressUpdate", ""+progress[0]);
     }
 
     /**
@@ -243,6 +246,7 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
 
         ctrl.dismissDialog(HammerActivity.DIALOG_WRITE_PROGRESS);
         view.status.setText("Shredded "+(total*4)+"kb in "+duration+" mm:ss");
+        Log.i("onPostExecute", "Count = "+total);
     }
 
 

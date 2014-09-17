@@ -17,8 +17,10 @@ package com.darkoverlordofdata.malleus;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,6 +59,7 @@ public class HammerActivity extends ActionBarActivity {
                     .commit();
 
         }
+
         DeleteFileAsync task = new DeleteFileAsync().inject(model, view, this);
         task.execute();
     }
@@ -129,6 +132,8 @@ public class HammerActivity extends ActionBarActivity {
     }
 
     protected void showAbout() {
+
+
         // Inflate the about message contents
         View messageView = getLayoutInflater().inflate(R.layout.about, null, false);
 
@@ -139,7 +144,7 @@ public class HammerActivity extends ActionBarActivity {
         textView.setTextColor(defaultColor);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        //builder.setIcon(R.drawable.app_icon);
+        builder.setIcon(R.drawable.ic_launcher);
         builder.setTitle(R.string.app_name);
         builder.setView(messageView);
         builder.create();
