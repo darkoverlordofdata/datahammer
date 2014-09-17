@@ -1,3 +1,4 @@
+# == Malleus ==
       __  __       _ _
      |  \/  |     | | |
      | \  / | __ _| | | ___ _   _ ___
@@ -5,11 +6,6 @@
      | |  | | (_| | | |  __/ |_| \__ \      your android phone  
      |_|  |_|\__,_|_|_|\___|\__,_|___/       should ever use!
 
-# == Malleus ==
-
-## The best security is security that is easy to use
-
-### Why? Because it get's used.
 
 When you are done with your adroid phone, you may want to sell or gift it.
 Before doing so, it is recommended to perform a factory reset to protect your personal data.
@@ -18,13 +14,16 @@ After you've done that, install and run Malleus.
 CNet has a great article on reducing your exposure to identity theft -
 http://www.cnet.com/how-to/the-best-way-to-completely-wipe-your-android-device/
 
-But how many people will actually follow Step three: Load dummy data?
+But how many people will actually follow Step three: Load dummy data? 
+With Malleus, this is just a button click.
 
 ## Project status - beta
 
 The beta version of Malleus keeps it simple, and does 1 thing 
 
 - Overwrite all of your unused diskspace with random data.
+
+About 99% of android users can run Malleus which is designed to work on Android versions Froyo and forward. 
 
 
 ## Disclaimer: 
