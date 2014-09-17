@@ -14,6 +14,7 @@
  */
 package com.darkoverlordofdata.malleus;
 
+import android.content.Context;
 import android.os.Environment;
 import android.os.StatFs;
 import android.util.Log;
@@ -24,84 +25,110 @@ import java.text.DecimalFormat;
 
 public class DeviceModel implements Serializable {
 
-    private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 1L;
 
-    String rootPath;        //  path to folder
-    long rootTotal;         //  total bytes available
-    long rootUsed;          //  bytes used
-    long rootFree;          //  bytes free
-    String rootTotalKb;     //  readable total bytes available
-    String rootUsedKb;      //  readable bytes used
-    String rootFreeKb;      //  readable bytes free
-
-    String extPath;         //  path to folder
-    long extTotal;          //  total bytes available
-    long extUsed;           //  bytes used
-    long extFree;           //  bytes free
-    String extTotalKb;      //  readable total bytes available
-    String extUsedKb;       //  readable bytes used
-    String extFreeKb;       //  readable bytes free
-
-    boolean isAvailable;    //  SD card available
-    boolean isWriteable;    //  SD card writeable
+    /**
+     * Normalize the device storage locations:
+     *
+     *  [0]     = Internal Storage
+     *  [1]     = Primary External Storage
+     *  [2...]  = Secondary External Storage (starting with KitKat)
+     */
+    long free[];            //  bytes free
+    long used[];            //  bytes used
+    long total[];           //  total bytes available
+    String path[];          //  absolute storage path
+    String freeKb[];        //  readable bytes free
+    String usedKb[];        //  readable bytes used
+    String totalKb[];       //  readable total bytes available
+    boolean isAvail[];      //  is it ready to use?
 
     /**
      * DeviceModel
      * wraps the phone file system
      * 
      */
-    public DeviceModel() {
+    public DeviceModel(Context ctx) {
 
+        int count = (Integer.valueOf(android.os.Build.VERSION.SDK) < 19)
+                    ? 2 : ctx.getExternalFilesDirs(null).length+1;
 
-        String state = Environment.getExternalStorageState();
+        free    = new long[count];
+        used    = new long[count];
+        total   = new long[count];
+        path    = new String[count];
+        freeKb  = new String[count];
+        usedKb  = new String[count];
+        totalKb = new String[count];
+        isAvail = new boolean[count];
 
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            // Can read and write the media
-            isAvailable = isWriteable = true;
-        } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-            // Can only read the media
-            isAvailable = true;
-            isWriteable = false;
-        } else {
-            // Can't read or write
-            isAvailable = isWriteable = false;
-        }
-        if (Integer.valueOf(android.os.Build.VERSION.SDK) > 10) {
-            /**
-             * isExternalStorageEmulated = Emulated primar, like my Nexus 4
-             * Note: This is a typical configuration for a device with single
-             * external storage device which is backed by internal storage on the device.
-             * This means that we only need to write over the internal storage because
-             * they both map to the same memory card.
-             *
-             * @see https://source.android.com/devices/tech/storage/config-example.html
-             */
-            if (Environment.isExternalStorageEmulated()) {
-                isAvailable = isWriteable = false;
+        StatFs statFs;
+
+        /**
+         * Internal Storage
+         */
+        path[0]     = Environment.getDataDirectory().getAbsolutePath();
+        statFs      = new StatFs(path[0]);
+
+        total[0]    = (statFs.getBlockCount() * statFs.getBlockSize());
+        free[0]     = (statFs.getAvailableBlocks() * statFs.getBlockSize());
+        used[0]     = total[0] - free[0];
+        freeKb[0]   = humanize(used[0]);
+        usedKb[0]   = humanize(free[0]);
+        totalKb[0]  = humanize(total[0]);
+        isAvail[0]  = true;
+
+        /**
+         * External Storage
+         */
+        if (Integer.valueOf(android.os.Build.VERSION.SDK) < 19) {
+
+            path[1]     = Environment.getExternalStorageDirectory().getAbsolutePath();
+            statFs      = new StatFs(path[1]);
+
+            total[1]    = (statFs.getBlockCount() * statFs.getBlockSize());
+            free[1]     = (statFs.getAvailableBlocks() * statFs.getBlockSize());
+            used[1]     = total[1] - free[1];
+            freeKb[1]   = humanize(used[1]);
+            usedKb[1]   = humanize(free[1]);
+            totalKb[1]  = humanize(total[1]);
+
+            String state = Environment.getExternalStorageState();
+            isAvail[1] = Environment.MEDIA_MOUNTED.equals(state);
+
+        } else { /** starting with KitKat */
+
+            File ext[] = ctx.getExternalFilesDirs(null);
+            for (int i=1; i<=ext.length; i++) {
+
+                path[i]     = ext[i-1].getAbsolutePath();
+                statFs      = new StatFs(path[i]);
+
+                total[i]    = (statFs.getBlockCount() * statFs.getBlockSize());
+                free[i]     = (statFs.getAvailableBlocks() * statFs.getBlockSize());
+                used[i]     = total[i] - free[i];
+                usedKb[i]   = humanize(free[i]);
+                freeKb[i]   = humanize(used[i]);
+                totalKb[i]  = humanize(total[i]);
+
+                String state = Environment.getStorageState(ext[i-1]);
+                isAvail[i] = Environment.MEDIA_MOUNTED.equals(state);
+
             }
         }
 
+        Log.i("DeviceModel", "SDK Version = "+android.os.Build.VERSION.SDK);
 
-        StatFs statFs;
-        File root = Environment.getDataDirectory();
-        statFs = new StatFs(rootPath = root.getAbsolutePath());
-        rootTotal  = (statFs.getBlockCount() * statFs.getBlockSize());
-        rootFree   = (statFs.getAvailableBlocks() * statFs.getBlockSize());
-        rootUsed   = rootTotal - rootFree;
-        rootTotalKb = humanize(rootTotal);
-        rootFreeKb = humanize(rootFree);
-        rootUsedKb = humanize(rootUsed);
-
-
-        File ext = Environment.getExternalStorageDirectory();
-        statFs = new StatFs(extPath = ext.getAbsolutePath());
-        extTotal  = (statFs.getBlockCount() * statFs.getBlockSize());
-        extFree   = (statFs.getAvailableBlocks() * statFs.getBlockSize());
-        extUsed   = extTotal - extFree;
-        extTotalKb = humanize(extTotal);
-        extFreeKb = humanize(extFree);
-        extUsedKb = humanize(extUsed);
-
+        if (Integer.valueOf(android.os.Build.VERSION.SDK) > 10) {
+            /**
+             * Emulated primary:
+             * This means that we only need to write over the internal
+             * storage because they both map to the same memory card.
+             */
+            if (Environment.isExternalStorageEmulated()) {
+                isAvail[1] = false;
+            }
+        }
     }
 
     /**

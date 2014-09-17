@@ -17,10 +17,8 @@ package com.darkoverlordofdata.malleus;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,7 +36,7 @@ public class HammerActivity extends ActionBarActivity {
     public static final int DIALOG_WRITE_PROGRESS = 0;
     ProgressDialog progress;
     HammerFragment view;
-    DeviceModel model = new DeviceModel();
+    DeviceModel model;
 
     /**
      * Initialize the main screen
@@ -50,6 +48,7 @@ public class HammerActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hammer);
         if (savedInstanceState == null) {
+            model = new DeviceModel(this);
             view = new HammerFragment();
             Bundle args = new Bundle();
             args.putSerializable("model", model);

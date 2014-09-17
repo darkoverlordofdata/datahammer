@@ -14,36 +14,36 @@
     <!-- Root Directory Stats     -->
     <!-- ======================== -->
     <TextView
-        android:id="@+id/root_title"
-        android:text="@string/root_title"
+        android:id="@+id/int_title"
+        android:text="@string/int_title"
         style="@style/title"/>
 
     <TextView
-        android:id="@+id/root_total_value"
+        android:id="@+id/int_total_value"
         style="@style/tvalue"/>
 
     <!-- Used Memory -->
     <TextView
-        android:id="@+id/root_used_label"
+        android:id="@+id/int_used_label"
         android:text="@string/used_mem"
-        android:layout_below="@+id/root_title"
+        android:layout_below="@+id/int_title"
         style="@style/label"/>
 
     <TextView
-        android:id="@+id/root_used_value"
-        android:layout_below="@+id/root_title"
+        android:id="@+id/int_used_value"
+        android:layout_below="@+id/int_title"
         style="@style/value"/>
 
     <!-- Free Memory -->
     <TextView
-        android:id="@+id/root_free_label"
+        android:id="@+id/int_free_label"
         android:text="@string/free_mem"
-        android:layout_below="@+id/root_used_label"
+        android:layout_below="@+id/int_used_label"
         style="@style/label"/>
 
     <TextView
-        android:id="@+id/root_free_value"
-        android:layout_below="@+id/root_used_label"
+        android:id="@+id/int_free_value"
+        android:layout_below="@+id/int_used_label"
         style="@style/value"/>
 
     <!-- ======================== -->
@@ -52,12 +52,12 @@
     <TextView
         android:id="@+id/ext_title"
         android:text="@string/ext_title"
-        android:layout_below="@+id/root_free_label"
+        android:layout_below="@+id/int_free_label"
         style="@style/title"/>
 
     <TextView
         android:id="@+id/ext_total_value"
-        android:layout_below="@+id/root_free_label"
+        android:layout_below="@+id/int_free_label"
         style="@style/tvalue"/>
 
     <!-- Used Memory -->

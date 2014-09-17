@@ -58,28 +58,39 @@ public class DeleteFileAsync extends AsyncTask<Void, Integer, String> {
     protected String doInBackground(Void... params) {
 
         Context ctx = ctrl.getApplicationContext();
-        String path = FILENAME;
-        File file = new File(model.extPath + "/" + FILENAME);
 
         /**
          * Delete from Internal Storage
          */
         try {
-            ctx.deleteFile(path);
+            if (ctx.deleteFile(FILENAME)) {
+                Log.i("DeleteFileAsync", "deleted "+FILENAME);
+            } else {
+                Log.i("DeleteFileAsync", FILENAME + " Not Found");
+            }
         } catch (Exception e) {
-            Log.e("doInBackground", e.getMessage());
+            Log.e("DeleteFileAsync", e.getMessage());
         }
 
         /**
          * Delete from SD Card / External Storage
          */
-        try {
-            if (file.exists())
-                file.delete();
-        } catch (Exception e) {
-            Log.e("doInBackground", e.getMessage());
-        }
+        for (int i=1; i<model.path.length; i++) {
+            if (model.isAvail[i]) {
+                File file = new File(model.path[i]+ "/" + FILENAME);
+                try {
+                    if (file.exists()) {
+                        file.delete();
+                        Log.i("DeleteFileAsync", "deleted "+model.path[i]+ "/" + FILENAME);
+                    } else {
+                        Log.i("DeleteFileAsync", model.path[i]+ "/" + FILENAME + " Not Found");
 
+                    }
+                } catch (Exception e) {
+                    Log.e("DeleteFileAsync", e.getMessage());
+                }
+            }
+        }
         return null;
     }
 

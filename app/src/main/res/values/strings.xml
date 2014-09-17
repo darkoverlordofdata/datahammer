@@ -11,7 +11,7 @@
     <string name="app_credits">
         copyright 2014 Dark Overlord of Data
     </string>
-    <string name="root_title">Internal</string>
+    <string name="int_title">Internal</string>
     <string name="ext_title">External</string>
     <string name="total_mem">Total: </string>
     <string name="free_mem">Free: </string>

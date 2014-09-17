@@ -27,10 +27,11 @@ import android.widget.TextView;
 public class HammerFragment extends Fragment {
 
 
-    TextView rootStore;
-    TextView rootTotal;
-    TextView rootUsed;
-    TextView rootFree;
+    TextView intStore;
+    TextView intTotal;
+    TextView intUsed;
+    TextView intFree;
+
     TextView extStore;
     TextView extTotal;
     TextView extUsed;
@@ -56,10 +57,10 @@ public class HammerFragment extends Fragment {
 
         /* Bind all of the controls */
 
-        rootStore   = (TextView)rootView.findViewById(R.id.root_title);
-        rootTotal   = (TextView)rootView.findViewById(R.id.root_total_value);
-        rootUsed    = (TextView)rootView.findViewById(R.id.root_used_value);
-        rootFree    = (TextView)rootView.findViewById(R.id.root_free_value);
+        intStore   = (TextView)rootView.findViewById(R.id.int_title);
+        intTotal   = (TextView)rootView.findViewById(R.id.int_total_value);
+        intUsed    = (TextView)rootView.findViewById(R.id.int_used_value);
+        intFree    = (TextView)rootView.findViewById(R.id.int_free_value);
 
         extStore    = (TextView)rootView.findViewById(R.id.ext_title);
         extTotal    = (TextView)rootView.findViewById(R.id.ext_total_value);
@@ -68,22 +69,16 @@ public class HammerFragment extends Fragment {
 
         status      = (TextView)rootView.findViewById(R.id.status_value);
 
-        rootStore.setText(model.rootPath);
-        rootTotal.setText(model.rootTotalKb);
-        rootUsed.setText(model.rootUsedKb);
-        rootFree.setText(model.rootFreeKb);
+        intStore.setText(model.path[0]);
+        intTotal.setText(model.totalKb[0]);
+        intUsed.setText(model.usedKb[0]);
+        intFree.setText(model.freeKb[0]);
 
-        extStore.setText(model.extPath);
-        extTotal.setText(model.extTotalKb);
-        extUsed.setText(model.extUsedKb);
-        extFree.setText(model.extFreeKb);
-        status.append("External Media:"
-                +" readable="+model.isAvailable
-                +", writable="+model.isWriteable);
+        extStore.setText(model.path[1]);
+        extTotal.setText(model.totalKb[1]);
+        extUsed.setText(model.usedKb[1]);
+        extFree.setText(model.freeKb[1]);
 
         return rootView;
     }
-
-
-
 }

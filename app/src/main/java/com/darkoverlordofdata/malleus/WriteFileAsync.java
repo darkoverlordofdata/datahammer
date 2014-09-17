@@ -72,9 +72,13 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
 
         startTime = System.currentTimeMillis();
         total = 0;
-        if (model.isWriteable)
-            total += writeExternal();
+
         total += writeInternal();
+        for (int i=1; i<model.path.length; i++) {
+            if (model.isAvail[i]) {
+                total += writeExternal(model.path[i]);
+            }
+        }
         endTime = System.currentTimeMillis();
         return null;
     }
@@ -101,6 +105,7 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
                 try {
                     fw = ctx.openFileOutput(path, Context.MODE_PRIVATE);
                     bw = new BufferedOutputStream(fw);
+                    Log.i("WriteFileAsync", path + " Created");
                 } catch (IOException e) {
                     Log.e("doInBackground", e.getMessage());
                 }
@@ -140,7 +145,8 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
                 }
             } finally {
                 if (freeMemory) {
-                    ctx.deleteFile(path);
+                    //ctx.deleteFile(path);
+                    Log.i("WriteFileAsync", path + " Deleted");
                 }
             }
         }
@@ -150,13 +156,12 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
     /**
      * Write SD Card / External Storage
      */
-    private int writeExternal() {
+    private int writeExternal(String path) {
 
-        FileOutputStream fw = null;
-        OutputStream bw = null;
-        String path = model.extPath + "/" + FILENAME;
         int count = 0;
-        File file = new File(path);
+        OutputStream bw = null;
+        FileOutputStream fw = null;
+        File file = new File(path + "/" + FILENAME);
 
         try {
             if (file.exists())
@@ -170,6 +175,7 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
                     if (!file.exists()) file.createNewFile();
                     fw = new FileOutputStream(file.getAbsoluteFile());
                     bw = new BufferedOutputStream(fw);
+                    Log.i("WriteFileAsync", path + "/" + FILENAME + " Created");
                 } catch (IOException e) {
                     Log.e("doInBackground", e.getMessage());
                 }
@@ -210,8 +216,10 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
                 }
             } finally {
                 if (freeMemory) {
-                    if (file.exists())
-                        file.delete();
+                    if (file.exists()) {
+                        //file.delete();
+                        Log.i("WriteFileAsync", path + "/" + FILENAME + " Deleted");
+                    }
                 }
             }
         }
