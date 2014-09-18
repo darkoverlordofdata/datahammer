@@ -37,7 +37,7 @@ public class HammerActivity extends ActionBarActivity {
     public static final int         DIALOG_DELETE_PROGRESS  = 1;
     public static final int         CHUNK_SIZE              = 4096;
     public static final int         THROTTLE                = 10;
-    public static final boolean     BETA                    = true;
+    public static final boolean     BETA                    = false;
     public static final boolean     FREE_MEMORY             = true;
     public static final String      FILENAME                = "darkoverlordofdata.malleus";
 
@@ -147,7 +147,6 @@ public class HammerActivity extends ActionBarActivity {
      */
     public void hammerTime(View v) {
 
-//        view.status.setText("isAvail[1]="+ model.isAvail[1]);
         WriteFileAsync task = new WriteFileAsync().inject(model, view, this);
         task.execute();
     }

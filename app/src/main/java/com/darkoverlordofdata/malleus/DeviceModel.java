@@ -23,6 +23,11 @@ import java.io.File;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 
+/**
+ * Model the device storage
+ *
+ *
+ */
 public class DeviceModel implements Serializable {
 
     private static final long serialVersionUID = 1L;

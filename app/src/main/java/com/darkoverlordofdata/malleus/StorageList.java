@@ -1,3 +1,17 @@
+/**
+ +--------------------------------------------------------------------+
+ | StorageList.java
+ +--------------------------------------------------------------------+
+ | Copyright DarkOverlordOfData (c) 2014
+ +--------------------------------------------------------------------+
+ |
+ | This file is a part of Malleus
+ |
+ | Malleus is free software; you can copy, modify, and distribute
+ | it under the terms of the MIT License
+ |
+ +--------------------------------------------------------------------+
+ */
 package com.darkoverlordofdata.malleus;
 
 import android.widget.ArrayAdapter;
@@ -10,6 +24,11 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 
+/**
+ * A Custom List View for Storage Locations
+ *
+ *
+ */
 public class StorageList extends ArrayAdapter <String> {
 
     private final Activity context;

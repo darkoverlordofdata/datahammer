@@ -21,7 +21,7 @@ import android.util.Log;
 import java.io.File;
 
 /**
- * Delete the malleus files
+ * An Async task to clean up the malleus files
  *
  *
  */

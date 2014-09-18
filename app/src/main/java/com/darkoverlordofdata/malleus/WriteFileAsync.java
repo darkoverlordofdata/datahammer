@@ -26,7 +26,7 @@ import java.io.OutputStream;
 import java.util.Random;
 
 /**
- * Write the files in an async task
+ * An Async task to write the malleus files
  *
  *
  */
