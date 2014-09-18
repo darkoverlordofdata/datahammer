@@ -6,7 +6,7 @@
     <TableRow>
         <TextView
             android:id="@+id/path"
-            android:text="/mnt/sdcard"
+            android:text="/data"
             android:layout_weight="0.7"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -15,7 +15,7 @@
 
         <CheckBox
             android:id="@+id/shred"
-            android:text="shred"
+            android:text="@string/shred"
             android:layout_weight="0.3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Data Hammer</string>
+    <string name="app_name">Data Hammer BETA-ZED</string>
     <string name="app_descrip">
         Data Hammer overwrites all unused storage with random data.
         Run after performing a factory reset of your phone.
@@ -9,18 +9,10 @@
         Data Hammer takes about 5 minutes to run.
     </string>
     <string name="app_credits">
-        copyright 2014 Dark Overlord of Data
+        copyright &#169; 2014 Dark Overlord of Data
     </string>
-    <string name="int_title">Internal</string>
-    <string name="ext_title">External</string>
-    <string name="total_mem">Total: </string>
-    <string name="free_mem">Free: </string>
-    <string name="used_mem">Used: </string>
-    <string name="start">Start</string>
-    <string name="cleanup">Clean</string>
-    <string name="store_loc">External storage: </string>
-    <string name="title_files">Files: </string>
+    <string name="start">  Start  </string>
     <string name="about">About</string>
-    <string name="yellow">#ffff00</string>
+    <string name="shred">shred</string>
 
 </resources>
