@@ -124,7 +124,8 @@ public class DeviceModel implements Serializable {
             }
         }
 
-        Log.i("DeviceModel", "SDK Version = "+android.os.Build.VERSION.SDK);
+        if (HammerActivity.BETA)
+            Log.i("DeviceModel", "SDK Version = "+android.os.Build.VERSION.SDK);
 
         if (Integer.valueOf(android.os.Build.VERSION.SDK) > 10) {
             /**
@@ -139,7 +140,7 @@ public class DeviceModel implements Serializable {
     }
 
     public String analysis() {
-        String res = "";
+        String res;
 
         switch (path.length) {
             case 0:
