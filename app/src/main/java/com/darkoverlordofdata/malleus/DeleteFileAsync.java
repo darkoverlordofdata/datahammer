@@ -27,11 +27,9 @@ import java.io.File;
  */
 public class DeleteFileAsync extends AsyncTask<Void, Integer, String> {
 
-    final String FILENAME   = "darkoverlordofdata.malleus";
-
-    DeviceModel model;
-    HammerFragment view;
-    HammerActivity ctrl;
+    private DeviceModel         model;
+    private HammerFragment      view;
+    private HammerActivity      ctrl;
 
     /**
      * Acts as the constructor to inject dependencies
@@ -63,10 +61,12 @@ public class DeleteFileAsync extends AsyncTask<Void, Integer, String> {
          * Delete from Internal Storage
          */
         try {
-            if (ctx.deleteFile(FILENAME)) {
-                Log.i("DeleteFileAsync", "deleted "+FILENAME);
+            if (ctx.deleteFile(HammerActivity.FILENAME)) {
+                if (HammerActivity.BETA)
+                    Log.i("DeleteFileAsync", "deleted "+HammerActivity.FILENAME);
             } else {
-                Log.i("DeleteFileAsync", FILENAME + " Not Found");
+                if (HammerActivity.BETA)
+                    Log.i("DeleteFileAsync", HammerActivity.FILENAME + " Not Found");
             }
         } catch (Exception e) {
             Log.e("DeleteFileAsync", e.getMessage());
@@ -77,13 +77,15 @@ public class DeleteFileAsync extends AsyncTask<Void, Integer, String> {
          */
         for (int i=1; i<model.path.length; i++) {
             if (model.isAvail[i]) {
-                File file = new File(model.path[i]+ "/" + FILENAME);
+                File file = new File(model.path[i]+ "/" + HammerActivity.FILENAME);
                 try {
                     if (file.exists()) {
                         file.delete();
-                        Log.i("DeleteFileAsync", "deleted "+model.path[i]+ "/" + FILENAME);
+                        if (HammerActivity.BETA)
+                            Log.i("DeleteFileAsync", "deleted "+model.path[i]+ "/" + HammerActivity.FILENAME);
                     } else {
-                        Log.i("DeleteFileAsync", model.path[i]+ "/" + FILENAME + " Not Found");
+                        if (HammerActivity.BETA)
+                            Log.i("DeleteFileAsync", model.path[i]+ "/" + HammerActivity.FILENAME + " Not Found");
 
                     }
                 } catch (Exception e) {
@@ -101,7 +103,7 @@ public class DeleteFileAsync extends AsyncTask<Void, Integer, String> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        ctrl.showDialog(HammerActivity.DIALOG_WRITE_PROGRESS);
+        ctrl.showDialog(HammerActivity.DIALOG_DELETE_PROGRESS);
     }
 
     /**
@@ -118,8 +120,7 @@ public class DeleteFileAsync extends AsyncTask<Void, Integer, String> {
      */
     @Override
     protected void onPostExecute(String result) {
-        ctrl.dismissDialog(HammerActivity.DIALOG_WRITE_PROGRESS);
-        view.status.setText("Malleus temporary work files deleted.");
+        ctrl.dismissDialog(HammerActivity.DIALOG_DELETE_PROGRESS);
     }
 
 

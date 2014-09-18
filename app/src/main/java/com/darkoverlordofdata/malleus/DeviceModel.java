@@ -27,6 +27,7 @@ public class DeviceModel implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private static final String TAIL = "/com.darkoverlordofdata.malleus/files";
     /**
      * Normalize the device storage locations:
      *
@@ -34,14 +35,15 @@ public class DeviceModel implements Serializable {
      *  [1]     = Primary External Storage
      *  [2...]  = Secondary External Storage (starting with KitKat)
      */
-    long free[];            //  bytes free
-    long used[];            //  bytes used
-    long total[];           //  total bytes available
-    String path[];          //  absolute storage path
-    String freeKb[];        //  readable bytes free
-    String usedKb[];        //  readable bytes used
-    String totalKb[];       //  readable total bytes available
-    boolean isAvail[];      //  is it ready to use?
+    public long free[];            //  bytes free
+    public long used[];            //  bytes used
+    public long total[];           //  total bytes available
+    public String path[];          //  absolute storage path
+    public String store[];         //  absolute storage path
+    public String freeKb[];        //  readable bytes free
+    public String usedKb[];        //  readable bytes used
+    public String totalKb[];       //  readable total bytes available
+    public boolean isAvail[];      //  is it ready to use?
 
     /**
      * DeviceModel
@@ -57,6 +59,7 @@ public class DeviceModel implements Serializable {
         used    = new long[count];
         total   = new long[count];
         path    = new String[count];
+        store   = new String[count];
         freeKb  = new String[count];
         usedKb  = new String[count];
         totalKb = new String[count];
@@ -70,6 +73,7 @@ public class DeviceModel implements Serializable {
         path[0]     = Environment.getDataDirectory().getAbsolutePath();
         statFs      = new StatFs(path[0]);
 
+        store[0]    = path[0];
         total[0]    = (statFs.getBlockCount() * statFs.getBlockSize());
         free[0]     = (statFs.getAvailableBlocks() * statFs.getBlockSize());
         used[0]     = total[0] - free[0];
@@ -86,6 +90,8 @@ public class DeviceModel implements Serializable {
             path[1]     = Environment.getExternalStorageDirectory().getAbsolutePath();
             statFs      = new StatFs(path[1]);
 
+
+            store[1]    = path[1].replace(TAIL, "");
             total[1]    = (statFs.getBlockCount() * statFs.getBlockSize());
             free[1]     = (statFs.getAvailableBlocks() * statFs.getBlockSize());
             used[1]     = total[1] - free[1];
@@ -104,6 +110,7 @@ public class DeviceModel implements Serializable {
                 path[i]     = ext[i-1].getAbsolutePath();
                 statFs      = new StatFs(path[i]);
 
+                store[i]    = path[i].replace(TAIL, "");
                 total[i]    = (statFs.getBlockCount() * statFs.getBlockSize());
                 free[i]     = (statFs.getAvailableBlocks() * statFs.getBlockSize());
                 used[i]     = total[i] - free[i];
@@ -131,6 +138,31 @@ public class DeviceModel implements Serializable {
         }
     }
 
+    public String analysis() {
+        String res = "";
+
+        switch (path.length) {
+            case 0:
+                res = "Impossible - you have no storage";
+                break;
+
+            case 1:
+                res = "You have Internal Storage only";
+                break;
+
+            case 2:
+                res = "You have Internal and External storage";
+                break;
+
+            default:
+                res = "You have Internal, External Primary and Secondary storage";
+
+        }
+        if (!isAvail[1]) {
+            res += "\nYour External storage is emulated on the Internal storage card";
+        }
+        return res;
+    }
     /**
      * Format with 2 decimal places
      *

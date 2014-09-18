@@ -33,10 +33,18 @@ import android.widget.TextView;
  */
 public class HammerActivity extends ActionBarActivity {
 
-    public static final int DIALOG_WRITE_PROGRESS = 0;
-    ProgressDialog progress;
-    HammerFragment view;
-    DeviceModel model;
+    public static final int         DIALOG_WRITE_PROGRESS   = 0;
+    public static final int         DIALOG_DELETE_PROGRESS  = 1;
+    public static final int         CHUNK_SIZE              = 4096;
+    public static final int         THROTTLE                = 10;
+    public static final boolean     BETA                    = true;
+    public static final boolean     FREE_MEMORY             = true;
+    public static final String      FILENAME                = "darkoverlordofdata.malleus";
+
+
+    private DeviceModel         model;
+    private HammerFragment      view;
+    public ProgressDialog       progress;
 
     /**
      * Initialize the main screen
@@ -96,6 +104,7 @@ public class HammerActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
     /**
      * Initialize the Progress Bar
      *
@@ -105,15 +114,27 @@ public class HammerActivity extends ActionBarActivity {
     @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {
+
             case DIALOG_WRITE_PROGRESS:
                 progress = new ProgressDialog(this, R.style.MalleusDialog);
                 progress.setMessage("Shredding...");
                 progress.setIndeterminate(false);
-                progress.setMax(1024);
+                progress.setMax(100);
                 progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 progress.setCancelable(false);
                 progress.show();
                 return progress;
+
+            case DIALOG_DELETE_PROGRESS:
+                progress = new ProgressDialog(this, R.style.MalleusDialog);
+                progress.setMessage("Cleanup...");
+                progress.setIndeterminate(false);
+                progress.setMax(100);
+                progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progress.setCancelable(false);
+                progress.show();
+                return progress;
+
             default:
                 return null;
         }
@@ -126,6 +147,7 @@ public class HammerActivity extends ActionBarActivity {
      */
     public void hammerTime(View v) {
 
+//        view.status.setText("isAvail[1]="+ model.isAvail[1]);
         WriteFileAsync task = new WriteFileAsync().inject(model, view, this);
         task.execute();
     }

@@ -32,18 +32,13 @@ import java.util.Random;
  */
 public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
 
-    final String FILENAME   = "darkoverlordofdata.malleus";
-    final int CHUNK_SIZE    = 4096;             //  write out sector sized chunks
-    boolean freeMemory      = true;             //  delete the files when done
-
-    byte[] buffer = new byte[CHUNK_SIZE];
-    DeviceModel model;
-    HammerFragment view;
-    HammerActivity ctrl;
-    Random rnd;
-    int total;
-    long startTime;
-    long endTime;
+    private int                 total;
+    private long                startTime;
+    private long                endTime;
+    private byte[]              buffer = new byte[HammerActivity.CHUNK_SIZE];
+    private DeviceModel         model;
+    private HammerFragment      view;
+    private HammerActivity      ctrl;
 
     /**
      * Acts as the constructor to inject dependencies
@@ -57,7 +52,6 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
         this.model = model;
         this.view = view;
         this.ctrl = ctrl;
-        this.rnd = new Random();
         return this;
     }
 
@@ -73,7 +67,9 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
         startTime = System.currentTimeMillis();
         total = 0;
 
-        total += writeInternal();
+        if (model.isAvail[0]) {
+            total += writeInternal();
+        }
         for (int i=1; i<model.path.length; i++) {
             if (model.isAvail[i]) {
                 total += writeExternal(model.path[i]);
@@ -91,7 +87,7 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
         Context ctx = ctrl.getApplicationContext();
         FileOutputStream fw = null;
         OutputStream bw = null;
-        String path = FILENAME;
+        String path = HammerActivity.FILENAME;
         int count = 0;
 
         try {
@@ -105,7 +101,8 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
                 try {
                     fw = ctx.openFileOutput(path, Context.MODE_PRIVATE);
                     bw = new BufferedOutputStream(fw);
-                    Log.i("WriteFileAsync", path + " Created");
+                    if (HammerActivity.BETA) 
+                        Log.i("WriteFileAsync", path + " Created");
                 } catch (IOException e) {
                     Log.e("doInBackground", e.getMessage());
                 }
@@ -119,10 +116,13 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
                         bw.write(buffer);
                         fw.getFD().sync();
                         publishProgress((Integer) count++);
-                        if (count>10) break;
+                        if (HammerActivity.BETA) 
+                            if (count > HammerActivity.THROTTLE)
+                                break;
                     }
                 } catch (IOException e) {
-                    Log.i("doInBackground", "Finished writing " + count + " internal storage blocks");
+                    if (HammerActivity.BETA)
+                        Log.i("doInBackground", "Finished writing " + count + " internal storage blocks");
                 } catch (NullPointerException e) {
                     Log.e("doInBackground", e.getMessage());
                 }
@@ -133,20 +133,22 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
                 if (!(bw == null)) {
                     try {
                         /**
-                         * @see http://docs.oracle.com/javase/7/docs/api/java/io/OutputStream.html#method_detail
                          * The close method of OutputStream does nothing.
+                         * Just close the FileOutputStream.
                          */
                         fw.close();
                     } catch (IOException e) {
-                        Log.i("doInBackground", e.getMessage());
+                        if (HammerActivity.BETA) 
+                            Log.i("doInBackground", e.getMessage());
                     } catch (NullPointerException e) {
                         Log.e("doInBackground", e.getMessage());
                     }
                 }
             } finally {
-                if (freeMemory) {
+                if (HammerActivity.FREE_MEMORY) {
                     //ctx.deleteFile(path);
-                    Log.i("WriteFileAsync", path + " Deleted");
+                    if (HammerActivity.BETA) 
+                        Log.i("WriteFileAsync", path + " Deleted");
                 }
             }
         }
@@ -161,7 +163,7 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
         int count = 0;
         OutputStream bw = null;
         FileOutputStream fw = null;
-        File file = new File(path + "/" + FILENAME);
+        File file = new File(path + "/" + HammerActivity.FILENAME);
 
         try {
             if (file.exists())
@@ -175,7 +177,8 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
                     if (!file.exists()) file.createNewFile();
                     fw = new FileOutputStream(file.getAbsoluteFile());
                     bw = new BufferedOutputStream(fw);
-                    Log.i("WriteFileAsync", path + "/" + FILENAME + " Created");
+                    if (HammerActivity.BETA) 
+                        Log.i("WriteFileAsync", path + "/" + HammerActivity.FILENAME + " Created");
                 } catch (IOException e) {
                     Log.e("doInBackground", e.getMessage());
                 }
@@ -190,10 +193,13 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
                         bw.write(buffer);
                         fw.getFD().sync();
                         publishProgress((Integer) count++);
-                        if (count>10) break;
+                        if (HammerActivity.BETA) 
+                            if (count > HammerActivity.THROTTLE)
+                                break;
                     }
                 } catch (IOException e) {
-                    Log.i("doInBackground", "Finished writing " + count + " external storage blocks");
+                    if (HammerActivity.BETA) 
+                        Log.i("doInBackground", "Finished writing " + count + " external storage blocks");
                 } catch (NullPointerException e) {
                     Log.e("doInBackground", e.getMessage());
                 }
@@ -204,21 +210,23 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
                 if (!(bw == null)) {
                     try {
                         /**
-                         * @see http://docs.oracle.com/javase/7/docs/api/java/io/OutputStream.html#method_detail
                          * The close method of OutputStream does nothing.
+                         * Just close the FileOutputStream.
                          */
                         fw.close();
                     } catch (IOException e) {
-                        Log.i("doInBackground", e.getMessage());
+                        if (HammerActivity.BETA) 
+                            Log.i("doInBackground", e.getMessage());
                     } catch (NullPointerException e) {
                         Log.e("doInBackground", e.getMessage());
                     }
                 }
             } finally {
-                if (freeMemory) {
+                if (HammerActivity.FREE_MEMORY) {
                     if (file.exists()) {
                         //file.delete();
-                        Log.i("WriteFileAsync", path + "/" + FILENAME + " Deleted");
+                        if (HammerActivity.BETA) 
+                            Log.i("WriteFileAsync", path + "/" + HammerActivity.FILENAME + " Deleted");
                     }
                 }
             }
@@ -240,7 +248,8 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
      */
     protected void onProgressUpdate(Integer... progress) {
         ctrl.progress.setProgress(progress[0]);
-        Log.i("onProgressUpdate", ""+progress[0]);
+        if (HammerActivity.BETA) 
+            Log.i("onProgressUpdate", ""+progress[0]);
     }
 
     /**
@@ -254,7 +263,8 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
 
         ctrl.dismissDialog(HammerActivity.DIALOG_WRITE_PROGRESS);
         view.status.setText("Shredded "+(total*4)+"kb in "+duration+" mm:ss");
-        Log.i("onPostExecute", "Count = "+total);
+        if (HammerActivity.BETA) 
+            Log.i("onPostExecute", "Count = "+total);
     }
 
 

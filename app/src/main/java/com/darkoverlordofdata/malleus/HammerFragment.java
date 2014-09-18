@@ -19,6 +19,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 /**
@@ -26,19 +27,8 @@ import android.widget.TextView;
  */
 public class HammerFragment extends Fragment {
 
-
-    TextView intStore;
-    TextView intTotal;
-    TextView intUsed;
-    TextView intFree;
-
-    TextView extStore;
-    TextView extTotal;
-    TextView extUsed;
-    TextView extFree;
-    TextView status;
-
-    DeviceModel model;
+    public TextView             analysis;
+    public TextView             status;
 
 
     /**
@@ -52,32 +42,21 @@ public class HammerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
         View rootView = inflater.inflate(R.layout.fragment_hammer, container, false);
-        model = (DeviceModel)getArguments().getSerializable("model");
+        DeviceModel model = (DeviceModel)getArguments().getSerializable("model");
 
         /* Bind all of the controls */
-
-        intStore   = (TextView)rootView.findViewById(R.id.int_title);
-        intTotal   = (TextView)rootView.findViewById(R.id.int_total_value);
-        intUsed    = (TextView)rootView.findViewById(R.id.int_used_value);
-        intFree    = (TextView)rootView.findViewById(R.id.int_free_value);
-
-        extStore    = (TextView)rootView.findViewById(R.id.ext_title);
-        extTotal    = (TextView)rootView.findViewById(R.id.ext_total_value);
-        extUsed     = (TextView)rootView.findViewById(R.id.ext_used_value);
-        extFree     = (TextView)rootView.findViewById(R.id.ext_free_value);
-
+        ListView list = (ListView)rootView.findViewById(R.id.list);
+        analysis    = (TextView)rootView.findViewById(R.id.analysis_value);
         status      = (TextView)rootView.findViewById(R.id.status_value);
 
-        intStore.setText(model.path[0]);
-        intTotal.setText(model.totalKb[0]);
-        intUsed.setText(model.usedKb[0]);
-        intFree.setText(model.freeKb[0]);
+        StorageList adapter = new StorageList(getActivity(), model);
 
-        extStore.setText(model.path[1]);
-        extTotal.setText(model.totalKb[1]);
-        extUsed.setText(model.usedKb[1]);
-        extFree.setText(model.freeKb[1]);
+        list.setAdapter(adapter);
+
+        analysis.setText(model.analysis());
 
         return rootView;
     }
