@@ -1,6 +1,6 @@
 /**
  +--------------------------------------------------------------------+
- | WriteFileAsync.java
+ | WriteSequentialAsync.java
  +--------------------------------------------------------------------+
  | Copyright DarkOverlordOfData (c) 2014
  +--------------------------------------------------------------------+
@@ -30,12 +30,12 @@ import java.util.Random;
  *
  *
  */
-public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
+public class WriteSequentialAsync extends AsyncTask<Void, Integer, String> {
 
     private int                 total;
     private long                startTime;
     private long                endTime;
-    private byte[]              buffer = new byte[HammerActivity.CHUNK_SIZE];
+    private byte[]              buffer = new byte[HammerActivity.PAGE_SIZE];
     private DeviceModel         model;
     private HammerFragment      view;
     private HammerActivity      ctrl;
@@ -47,7 +47,7 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
      * @param view
      * @return
      */
-    WriteFileAsync inject(DeviceModel model, HammerFragment view, HammerActivity ctrl) {
+    WriteSequentialAsync inject(DeviceModel model, HammerFragment view, HammerActivity ctrl) {
 
         this.model = model;
         this.view = view;
@@ -103,6 +103,7 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
                     bw = new BufferedOutputStream(fw);
                     if (HammerActivity.BETA) 
                         Log.i("WriteFileAsync", path + " Created");
+                    Log.i("WriteFileAsync", path + " Created");
                 } catch (IOException e) {
                     Log.e("doInBackground", e.getMessage());
                 }
@@ -116,13 +117,14 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
                         bw.write(buffer);
                         fw.getFD().sync();
                         publishProgress((Integer) count++);
-                        if (HammerActivity.BETA) 
+                        if (HammerActivity.THROTTLE > 0)
                             if (count > HammerActivity.THROTTLE)
                                 break;
                     }
                 } catch (IOException e) {
                     if (HammerActivity.BETA)
                         Log.i("doInBackground", "Finished writing " + count + " internal storage blocks");
+                    Log.i("doInBackground", "Finished writing " + count + " internal storage blocks");
                 } catch (NullPointerException e) {
                     Log.e("doInBackground", e.getMessage());
                 }
@@ -146,9 +148,10 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
                 }
             } finally {
                 if (HammerActivity.FREE_MEMORY) {
-                    //ctx.deleteFile(path);
+                    ctx.deleteFile(path);
                     if (HammerActivity.BETA) 
                         Log.i("WriteFileAsync", path + " Deleted");
+                    Log.i("WriteFileAsync", path + " Deleted");
                 }
             }
         }
@@ -179,6 +182,7 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
                     bw = new BufferedOutputStream(fw);
                     if (HammerActivity.BETA) 
                         Log.i("WriteFileAsync", path + "/" + HammerActivity.FILENAME + " Created");
+                    Log.i("WriteFileAsync", path + "/" + HammerActivity.FILENAME + " Created");
                 } catch (IOException e) {
                     Log.e("doInBackground", e.getMessage());
                 }
@@ -193,13 +197,14 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
                         bw.write(buffer);
                         fw.getFD().sync();
                         publishProgress((Integer) count++);
-                        if (HammerActivity.BETA) 
+                        if (HammerActivity.THROTTLE > 0)
                             if (count > HammerActivity.THROTTLE)
                                 break;
                     }
                 } catch (IOException e) {
                     if (HammerActivity.BETA) 
                         Log.i("doInBackground", "Finished writing " + count + " external storage blocks");
+                    Log.i("doInBackground", "Finished writing " + count + " external storage blocks");
                 } catch (NullPointerException e) {
                     Log.e("doInBackground", e.getMessage());
                 }
@@ -224,9 +229,10 @@ public class WriteFileAsync extends AsyncTask<Void, Integer, String> {
             } finally {
                 if (HammerActivity.FREE_MEMORY) {
                     if (file.exists()) {
-                        //file.delete();
+                        file.delete();
                         if (HammerActivity.BETA) 
                             Log.i("WriteFileAsync", path + "/" + HammerActivity.FILENAME + " Deleted");
+                        Log.i("WriteFileAsync", path + "/" + HammerActivity.FILENAME + " Deleted");
                     }
                 }
             }

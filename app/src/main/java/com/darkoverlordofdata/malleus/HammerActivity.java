@@ -35,10 +35,17 @@ public class HammerActivity extends ActionBarActivity {
 
     public static final int         DIALOG_WRITE_PROGRESS   = 0;
     public static final int         DIALOG_DELETE_PROGRESS  = 1;
-    public static final int         CHUNK_SIZE              = 4096;
-    public static final int         THROTTLE                = 10;
-    public static final boolean     BETA                    = false;
-    public static final boolean     FREE_MEMORY             = true;
+
+    /**
+     * Configuration
+     */
+    public static final int         IO_SEQENTIAL            = 0;
+    public static final int         IO_RANDOM               = 1;
+    public static final int         IO_STYLE                = 1;        // Random access was 16x faster on my Nexus4
+    public static final int         THROTTLE                = 0;        // limit # of records to process
+    public static final boolean     BETA                    = false;    // log status messages
+    public static final boolean     FREE_MEMORY             = true;     // delete the files when we're done
+    public static final int         PAGE_SIZE               = 1024 * 4;
     public static final String      FILENAME                = "darkoverlordofdata.malleus";
 
 
@@ -147,8 +154,17 @@ public class HammerActivity extends ActionBarActivity {
      */
     public void hammerTime(View v) {
 
-        WriteFileAsync task = new WriteFileAsync().inject(model, view, this);
-        task.execute();
+        switch(IO_STYLE) {
+            case IO_SEQENTIAL:
+                WriteSequentialAsync task1 = new WriteSequentialAsync().inject(model, view, this);
+                task1.execute();
+                break;
+            case IO_RANDOM:
+                WriteRandomAsync task2 = new WriteRandomAsync().inject(model, view, this);
+                task2.execute();
+                break;
+
+        }
     }
 
     protected void showAbout() {

@@ -44,6 +44,8 @@ public class StorageList extends ArrayAdapter <String> {
         super(context, R.layout.storage, model.path);
         this.context = context;
         this.model = model;
+
+
     }
 
     /**

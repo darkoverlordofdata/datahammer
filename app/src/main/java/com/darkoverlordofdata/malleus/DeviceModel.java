@@ -48,7 +48,7 @@ public class DeviceModel implements Serializable {
     public String freeKb[];        //  readable bytes free
     public String usedKb[];        //  readable bytes used
     public String totalKb[];       //  readable total bytes available
-    public boolean isAvail[];      //  is it ready to use?
+    public boolean isAvail[];      //  is it available to us?
 
     /**
      * DeviceModel
@@ -125,7 +125,7 @@ public class DeviceModel implements Serializable {
 
                 String state = Environment.getStorageState(ext[i-1]);
                 isAvail[i] = Environment.MEDIA_MOUNTED.equals(state);
-
+                if (i > 1) isAvail[i] = false; // Secondary Storage is likely read-only...
             }
         }
 

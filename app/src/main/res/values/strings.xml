@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Data Hammer BETA-ZED</string>
+    <string name="app_name">Data Hammer BETA</string>
     <string name="app_descrip">
         Data Hammer overwrites all unused storage with random data.
         Run after performing a factory reset of your phone.
 
-        Data Hammer takes about 5 minutes to run.
+        Data Hammer takes about an hour to run.
     </string>
     <string name="app_credits">
         copyright &#169; 2014 Dark Overlord of Data

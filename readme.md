@@ -15,7 +15,7 @@ CNet has a great article on reducing your exposure to identity theft -
 http://www.cnet.com/how-to/the-best-way-to-completely-wipe-your-android-device/
 
 But how many people will actually follow Step three: Load dummy data? 
-With Malleus, this is just a button click.
+With Malleus, it only takes a button click.
 
 ## Project status - beta
 
@@ -23,8 +23,15 @@ The beta version of Malleus keeps it simple, and does 1 thing
 
 - Overwrite all of your unused diskspace with random data.
 
-About 99% of android users can run Malleus which is designed to work on Android versions Froyo and forward. 
+Malleus tested on:
 
+    Model       API                 Time
+    =====       ===                 ====
+    Nexus4      ART 4.4.4           9gb 18 min
+    Nexus4      Dalvik 4.4.4        9gb tbd
+    Galaxy      Gingerbread 2.3     tbd
+    T-Mobile    Froyo 2.2           tbd
+    
 
 ## Disclaimer: 
 
