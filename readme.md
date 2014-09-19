@@ -1,22 +1,17 @@
-# ==&lt; Privacy &gt;==
+       ___       __       __ __                        
+      / _ \___ _/ /____ _/ // /__ ___ _  __ _  ___ ____
+     / // / _ `/ __/ _ `/ _  / _ `/  ' \/  ' \/ -_) __/
+    /____/\_,_/\__/\_,_/_//_/\_,_/_/_/_/_/_/_/\__/_/   
+                                                       
 
-When you are done with your Android&#8482; phone, you may want to sell or gift it.
-Before doing so, it is recommended to perform a factory reset to protect your personal data.
-After you've done that, install and run Malleus.
+When you sell your phone, protect your privacy.
 
-      __  __       _ _
-     |  \/  |     | | |
-     | \  / | __ _| | | ___ _   _ ___
-     | |\/| |/ _` | | |/ _ \ | | / __|     the last software
-     | |  | | (_| | | |  __/ |_| \__ \      your Android phone  
-     |_|  |_|\__,_|_|_|\___|\__,_|___/       should ever use!
+* Run the recommended factory reset
+* Then install and run DataHammer for Android&#8482;
 
+DataHammer overwrites all your unused storage with random data, so it can't be undeleted.
 
-CNet has a great article on reducing your exposure to identity theft -
-http://www.cnet.com/how-to/the-best-way-to-completely-wipe-your-android-device/
-
-But how many people will actually follow Step three: Load dummy data? 
-With Malleus, it only takes a button click.
+Android is a trademark of Google Inc.
 
 ## Project status - beta
 
@@ -32,11 +27,10 @@ Malleus has been tested on:
 
 ## Disclaimer: 
 
-    Malleus has not been verified by internal or external entities. 
+    DataHammer has not been verified by internal or external entities. 
     The code may be still of beta quality and may not fully prevent
     recovery of personal information.
     
-Android is a trademark of Google Inc.
 
 # MIT License
 
