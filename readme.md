@@ -21,14 +21,14 @@ With Malleus, it only takes a button click.
 
 The beta version of Malleus keeps it simple, and does 1 thing 
 
-- Overwrite all of your unused diskspace with random data.
+- Overwrite all of your unused disk space with random data.
 
 Malleus tested on:
 
-    Model       API                 Time
-    =====       ===                 ====
-    Nexus4      ART 4.4.4           9gb 18 min
-    Nexus4      Dalvik 4.4.4        9gb tbd
+    Model       API                 Shreded
+    =====       ===                 =======
+    Nexus4      ART 4.4.4           9.7 gb in 10m 34s
+    Nexus4      Dalvik 4.4.4        10.12 gb in 13m 54s
     Galaxy      Gingerbread 2.3     tbd
     T-Mobile    Froyo 2.2           tbd
     
