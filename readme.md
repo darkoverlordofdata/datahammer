@@ -1,15 +1,16 @@
-# == Privacy ==
+# ==&lt; Privacy &gt;==
+
+When you are done with your Android&#8482; phone, you may want to sell or gift it.
+Before doing so, it is recommended to perform a factory reset to protect your personal data.
+After you've done that, install and run Malleus.
+
       __  __       _ _
      |  \/  |     | | |
      | \  / | __ _| | | ___ _   _ ___
      | |\/| |/ _` | | |/ _ \ | | / __|     the last software
-     | |  | | (_| | | |  __/ |_| \__ \      your android phone  
+     | |  | | (_| | | |  __/ |_| \__ \      your Android phone  
      |_|  |_|\__,_|_|_|\___|\__,_|___/       should ever use!
 
-
-When you are done with your adroid phone, you may want to sell or gift it.
-Before doing so, it is recommended to perform a factory reset to protect your personal data.
-After you've done that, install and run Malleus.
 
 CNet has a great article on reducing your exposure to identity theft -
 http://www.cnet.com/how-to/the-best-way-to-completely-wipe-your-android-device/
@@ -19,11 +20,7 @@ With Malleus, it only takes a button click.
 
 ## Project status - beta
 
-The beta version of Malleus keeps it simple, and does 1 thing 
-
-- Overwrite all of your unused disk space with random data.
-
-Malleus tested on:
+Malleus has been tested on:
 
     Model       API                 Shreded
     =====       ===                 =======
@@ -39,6 +36,7 @@ Malleus tested on:
     The code may be still of beta quality and may not fully prevent
     recovery of personal information.
     
+Android is a trademark of Google Inc.
 
 # MIT License
 

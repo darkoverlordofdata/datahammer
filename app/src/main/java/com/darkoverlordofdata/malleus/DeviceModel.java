@@ -149,23 +149,23 @@ public class DeviceModel implements Serializable {
 
         switch (path.length) {
             case 0:
-                res = "Impossible - you have no storage";
+                res = "Impossible - you have no storage.";
                 break;
 
             case 1:
-                res = "You have Internal Storage only";
+                res = "You have Internal Storage only.";
                 break;
 
             case 2:
-                res = "You have Internal and External storage";
+                res = "You have Internal and External storage.";
                 break;
 
             default:
-                res = "You have Internal, External Primary and Secondary storage";
+                res = "You have Internal, External Primary and Secondary storage.";
 
         }
         if (!isAvail[1]) {
-            res += "\nYour External storage is emulated on the Internal storage card";
+            res += " Your External storage is emulated on the Internal storage card.";
         }
         return res;
     }

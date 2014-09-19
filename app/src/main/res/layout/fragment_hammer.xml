@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:orientation="vertical"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -10,48 +10,95 @@
     android:background="@color/NavajoWhite"
     tools:context=".HammerActivity$HammerFragment">
 
-     <!--List Storage Choices-->
-    <ListView
-        android:id="@+id/list"
-        android:layout_height="fill_parent"
-        android:layout_width="match_parent">
-    </ListView>
-
-    <!-- Analysis -->
-    <TextView
-        android:id="@+id/analysis_value"
-        android:text=""
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_above="@+id/status_value"
-        style="@android:style/TextAppearance.Medium"
-        />
-
-    <!-- Status -->
-    <TextView
-        android:id="@+id/status_value"
-        android:text=""
-        android:layout_marginTop="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_above="@+id/button"
-        style="@android:style/TextAppearance.Medium"
-        />
     <!-- Start Writing -->
     <Button
         android:id="@+id/button"
         android:text="@string/start"
         android:layout_marginTop="16dp"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:onClick="hammerTime" />
 
+    <!--List Storage Choices-->
+
+    <TextView
+        android:id="@+id/title"
+        android:text="@string/select"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        style="@android:style/TextAppearance.Large"
+        />
+    <ListView
+        android:id="@+id/list"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+        android:layout_below="@id/title"
+        android:layout_above="@id/button"
+        android:stackFromBottom="false"
+        >
+    </ListView>
 
 
+    <TableLayout
+        android:id="@+id/tableLayout1"
+        android:layout_above="@id/button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+
+        <!-- Analysis -->
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp"
+            android:padding="5dip" >
+
+            <TextView
+                android:id="@+id/analysis_label"
+                android:text="@string/analysis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@android:style/TextAppearance.Medium"
+                />
+            <TextView
+                android:id="@+id/analysis_value"
+                android:lines="3"
+                android:layout_weight="1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                />
+        </TableRow>
+
+        <!-- Status -->
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dip" >
+
+            <TextView
+                android:id="@+id/status_label"
+                android:text="@string/status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@android:style/TextAppearance.Medium"
+                />
+            <TextView
+                android:id="@+id/status_value"
+                android:text="@string/ready"
+                android:lines="3"
+                android:layout_weight="1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                />
+
+
+        </TableRow>
+    </TableLayout>
 </RelativeLayout>

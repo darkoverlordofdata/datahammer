@@ -6,13 +6,17 @@
         Data Hammer overwrites all unused storage with random data.
         Run after performing a factory reset of your phone.
 
-        Data Hammer takes about an hour to run.
+        Data Hammer takes approx. 1 minute per gb to run.
     </string>
     <string name="app_credits">
         copyright &#169; 2014 Dark Overlord of Data
     </string>
-    <string name="start">  Start  </string>
+    <string name="start">Start</string>
     <string name="about">About</string>
     <string name="shred">shred</string>
+    <string name="analysis">Analysis:&#160;</string>
+    <string name="status">Status:&#160;</string>
+    <string name="ready">Ok.</string>
+    <string name="select">Select Storage to Shred</string>
 
 </resources>
