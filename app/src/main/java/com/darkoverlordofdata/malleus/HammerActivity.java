@@ -43,7 +43,7 @@ public class HammerActivity extends ActionBarActivity {
     public static final int         IO_RANDOM               = 1;
     public static final int         IO_STYLE                = 1;        // Random access was 16x faster on my Nexus4
     public static final int         THROTTLE                = 0;        // limit # of records to process
-    public static final boolean     BETA                    = false;    // log status messages
+    public static final boolean     BETA                    = true;    // log status messages
     public static final boolean     FREE_MEMORY             = true;     // delete the files when we're done
     public static final int         PAGE_SIZE               = 1024 * 4;
     public static final String      FILENAME                = "darkoverlordofdata.malleus";
@@ -74,8 +74,8 @@ public class HammerActivity extends ActionBarActivity {
 
         }
 
-        DeleteFileAsync task = new DeleteFileAsync().inject(model, view, this);
-        task.execute();
+//        DeleteFileAsync task = new DeleteFileAsync().inject(model, view, this);
+//        task.execute();
     }
 
 

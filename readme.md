@@ -4,14 +4,41 @@
     /____/\_,_/\__/\_,_/_//_/\_,_/_/_/_/_/_/_/\__/_/   
                                                        
 
-When you sell your phone, protect your privacy.
 
-* Run the recommended factory reset
-* Then install and run DataHammer for Android&#8482;
+When you sell your phone, be sure to protect your privacy:
 
-DataHammer overwrites all your unused storage with random data, so it can't be undeleted.
+* Run the recommended factory reset.
+* Install and run Data Hammer.
 
-Android is a trademark of Google Inc.
+Data Hammer is designed to be easy to use. It shreds, or overwrites your unused storage with random data, so it can't be undeleted.
+
+
+## FAQ
+
+#### Can I only run Data Hammer before disposing of my phone?
+No. It is safe to run daily.
+
+#### Can I run other programs while Data Hammer is running?
+It's not a good idea. Data Hammer is resource intensive.
+Other programs may act flakey or crash, but they will work fine after Data Hammer completes.
+
+#### How long does Data Hammer take to run?
+Milage will vary. It takes about 1 minute per gb of free data on my Nexus4.
+If your screen is off when DataHammer is finished, it will try to flash an LED.
+
+#### Can I stop and restart Data Hammer?
+Yes. You can stop Data Hammer from the task switcher and restart.
+When restarted, it will pick up where it left off.
+
+#### What if I don't want to restart Data Hammer?
+You'll need to release storage that has been shredded.
+In Settings>Apps>DataHammer, click on 'Clear data'.
+
+#### What versions is Data Hammer compattible with?
+This program runs on my Nexus4 with KitKat 4.4.4, both Dalvik and ART operating systems.
+Emulator tests pass for Froyo thru 'L'
+    
+
 
 ## Project status - beta
 

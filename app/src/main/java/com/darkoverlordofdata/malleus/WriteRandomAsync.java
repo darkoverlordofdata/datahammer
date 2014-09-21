@@ -14,7 +14,10 @@
  */
 package com.darkoverlordofdata.malleus;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -69,13 +72,33 @@ public class WriteRandomAsync extends AsyncTask<Void, Integer, String> {
         if (model.isAvail[0]) {
             total += writeInternal();
         }
-        for (int i=1; i<model.path.length; i++) {
+        for (int i = 1; i < model.path.length; i++) {
             if (model.isAvail[i]) {
                 total += writeExternal(model.path[i]);
             }
         }
         endTime = System.currentTimeMillis();
+        notifyDone();
         return null;
+    }
+
+
+    /**
+     * Notify that we are done, if that is possible.
+     */
+    private void notifyDone() {
+
+        NotificationManager nm = (NotificationManager) ctrl.getSystemService(android.content.Context.NOTIFICATION_SERVICE);
+        Notification done = new Notification();
+        done.ledARGB = Color.argb(255, 0, 255, 0);
+        done.flags |= Notification.FLAG_SHOW_LIGHTS;
+        done.flags |= Notification.FLAG_AUTO_CANCEL;
+        done.ledOnMS = 1;
+        done.ledOffMS = 0;
+        done.defaults = Notification.DEFAULT_ALL;
+
+        nm.notify(null, 0xd16a, done);
+
     }
 
     /**
@@ -85,25 +108,23 @@ public class WriteRandomAsync extends AsyncTask<Void, Integer, String> {
 
         Context ctx = ctrl.getApplicationContext();
         RandomAccessFile output = null;
-        File file = null;
+        File file = ctx.getFileStreamPath(HammerActivity.FILENAME);
+        long s = file.length();
+        Log.i("WriteRandomAsync", "file.length = "+s);
 
         try {
-            ctx.deleteFile(HammerActivity.FILENAME);
-        } finally {
-
-            try {
-                // Create the file
+            if (!file.exists()) {
                 FileOutputStream fs = ctx.openFileOutput(HammerActivity.FILENAME, Context.MODE_PRIVATE);
                 fs.close();
-                // Then open for random access
-                file = ctx.getFileStreamPath(HammerActivity.FILENAME);
-
-                output = new RandomAccessFile(file.getAbsolutePath(), "rw");
                 if (HammerActivity.BETA)
-                    Log.i("WriteFileAsync", file.getAbsolutePath() + " Created");
-            } catch (IOException e) {
-                Log.e("doInBackground", e.getMessage());
+                    Log.i("WriteRandomAsync", file.getAbsolutePath() + " Created");
             }
+            // open for random access
+            output = new RandomAccessFile(file.getAbsolutePath(), "rw");
+            if (HammerActivity.BETA)
+                Log.i("WriteRandomAsync", file.getAbsolutePath() + " Opened");
+        } catch (IOException e) {
+            Log.e("doInBackground", e.getMessage());
         }
         return shred(file, output);
     }
@@ -118,17 +139,12 @@ public class WriteRandomAsync extends AsyncTask<Void, Integer, String> {
         File file = new File(store + "/" + HammerActivity.FILENAME);
 
         try {
-            if (file.exists()) file.delete();
-        } finally {
-
-            try {
-                if (!file.exists()) file.createNewFile();
-                output = new RandomAccessFile(file.getAbsolutePath(), "rw");
-                if (HammerActivity.BETA)
-                    Log.i("WriteFileAsync", file.getAbsolutePath() + " Created");
-            } catch (IOException e) {
-                Log.e("doInBackground", e.getMessage());
-            }
+            if (!file.exists()) file.createNewFile();
+            output = new RandomAccessFile(file.getAbsolutePath(), "rw");
+            if (HammerActivity.BETA)
+                Log.i("WriteRandomAsync", file.getAbsolutePath() + " Created");
+        } catch (IOException e) {
+            Log.e("doInBackground", e.getMessage());
         }
         return shred(file, output);
     }
@@ -148,6 +164,10 @@ public class WriteRandomAsync extends AsyncTask<Void, Integer, String> {
              * */
             try {
                 new Random().nextBytes(buffer);
+
+                Log.i("WriteRandomAsync", "bytes: "+output.length());
+                output.skipBytes((int)output.length());
+
                 while (!(output == null)) {
                     output.write(buffer, 0, HammerActivity.PAGE_SIZE);
                     publishProgress((Integer) count++);
@@ -180,7 +200,7 @@ public class WriteRandomAsync extends AsyncTask<Void, Integer, String> {
                 if (file.exists()) {
                     file.delete();
                     if (HammerActivity.BETA)
-                        Log.i("WriteFileAsync", file.getAbsolutePath() + " Deleted");
+                        Log.i("WriteRandomAsync", file.getAbsolutePath() + " Deleted");
                 }
             }
         }
@@ -204,7 +224,7 @@ public class WriteRandomAsync extends AsyncTask<Void, Integer, String> {
     protected void onProgressUpdate(Integer... progress) {
         ctrl.progress.setProgress(progress[0]);
         if (HammerActivity.BETA)
-            if ((progress[0] % 100) == 0)
+            if ((progress[0] % 10000) == 0)
                 Log.i("onProgressUpdate", ""+progress[0]);
     }
 
