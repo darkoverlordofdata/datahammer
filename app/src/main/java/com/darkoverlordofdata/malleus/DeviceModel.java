@@ -30,13 +30,9 @@ import java.text.DecimalFormat;
  */
 public class DeviceModel implements Serializable {
 
-    private static final int SDK = Integer.valueOf(android.os.Build.VERSION.SDK);
-
-    private static final long serialVersionUID = 1L;
-
-    private static final String TAIL = "/com.darkoverlordofdata.malleus/files";
     /**
-     * Normalize the device storage locations:
+     * Normalize the device storage locations
+     * regardless of the SDK version:
      *
      *  [0]     = Internal Storage
      *  [1]     = Primary External Storage
@@ -53,24 +49,44 @@ public class DeviceModel implements Serializable {
     public boolean isAvail[];      //  is it available to us?
 
     /**
+     * Model version
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Tail of the external path is /packagename/files
+     */
+    private static final String TAIL = "/com.darkoverlordofdata.malleus/files";
+
+    /**
+     * Starting with 3.0 Honeycomb we have emulated primary.
+     * This means that we only need to write over the internal
+     * storage because they both map to the same memory card.
+     */
+    private static final boolean isHoneyComb = (Integer.valueOf(android.os.Build.VERSION.SDK) >= 11);
+
+    /**
+     * Starting with 4.3 JellyBean there are changes to the StatFs api
+     */
+    private static final boolean isJellyBean = (Integer.valueOf(android.os.Build.VERSION.SDK) >= 18);
+
+    /**
+     * starting with 4.4 KitKat there is an array of External Storage
+     * locations. The first corresponds to the Primary External.
+     * The rest are Secondary External.
+     */
+    private static final boolean isKitKat = (Integer.valueOf(android.os.Build.VERSION.SDK) >= 19);
+
+
+    /**
      * DeviceModel
      * wraps the phone file system
      * 
      */
     public DeviceModel(Context ctx) {
 
-        /**
-         * Starting with 3.0 Honeycomb we have emulated primary.
-         * This means that we only need to write over the internal
-         * storage because they both map to the same memory card.
-         */
-        boolean emulated = (SDK >= 11) && Environment.isExternalStorageEmulated();
-        /**
-         * starting with 4.4 KitKat there is an array of External Storage
-         * locations. The first corresponds to the Primary External.
-         * The rest are Secondary External.
-         */
-        int count = (SDK >= 19) ? ctx.getExternalFilesDirs(null).length+1 : 2;
+        boolean emulated = (isHoneyComb) && Environment.isExternalStorageEmulated();
+        int count = (isKitKat) ? ctx.getExternalFilesDirs(null).length+1 : 2;
 
         free    = new long[count];
         used    = new long[count];
@@ -98,7 +114,7 @@ public class DeviceModel implements Serializable {
         /**
          * External Storage
          */
-        if (SDK >= 19) {
+        if (isKitKat) {
 
             File ext[] = ctx.getExternalFilesDirs(null);
             for (int i=1; i<=ext.length; i++) {
@@ -148,7 +164,7 @@ public class DeviceModel implements Serializable {
      */
     private long getFree(String path) {
         StatFs statFs = new StatFs(path);
-        return (SDK >= 18)  /** starting with 4.3 JellyBean */
+        return (isJellyBean)
                 ? statFs.getAvailableBlocksLong() * statFs.getBlockSizeLong()
                 : (long)statFs.getAvailableBlocks() * (long)statFs.getBlockSize();
     }
@@ -161,7 +177,7 @@ public class DeviceModel implements Serializable {
      */
     private long getTotal(String path) {
         StatFs statFs = new StatFs(path);
-        return (SDK >= 18)  /** starting with 4.3 JellyBean */
+        return (isJellyBean)
                 ? statFs.getBlockCountLong() * statFs.getBlockSizeLong()
                 : (long)statFs.getBlockCount() * (long)statFs.getBlockSize();
     }
