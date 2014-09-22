@@ -30,7 +30,7 @@ import java.text.DecimalFormat;
  */
 public class DeviceModel implements Serializable {
 
-    private static final int SDK = Integer.valueOf(android.os.Build.VERSION.SDK;
+    private static final int SDK = Integer.valueOf(android.os.Build.VERSION.SDK);
 
     private static final long serialVersionUID = 1L;
 
@@ -59,7 +59,17 @@ public class DeviceModel implements Serializable {
      */
     public DeviceModel(Context ctx) {
 
-        /** starting with 4.4 KitKat */
+        /**
+         * Starting with 3.0 Honeycomb we have emulated primary.
+         * This means that we only need to write over the internal
+         * storage because they both map to the same memory card.
+         */
+        boolean emulated = (SDK >= 11) && Environment.isExternalStorageEmulated();
+        /**
+         * starting with 4.4 KitKat there is an array of External Storage
+         * locations. The first corresponds to the Primary External.
+         * The rest are Secondary External.
+         */
         int count = (SDK >= 19) ? ctx.getExternalFilesDirs(null).length+1 : 2;
 
         free    = new long[count];
@@ -75,7 +85,6 @@ public class DeviceModel implements Serializable {
         /**
          * Internal Storage
          */
-
         path[0]     = Environment.getDataDirectory().getAbsolutePath();
         store[0]    = path[0];
         total[0]    = getTotal(path[0]);
@@ -85,15 +94,11 @@ public class DeviceModel implements Serializable {
         usedKb[0]   = humanize(free[0]);
         totalKb[0]  = humanize(total[0]);
         isAvail[0]  = true;
+
         /**
          * External Storage
          */
         if (SDK >= 19) {
-            /**
-             * starting with 4.4 KitKat there is an array of External Storage
-             * locations. The first corresponds to the Primary External.
-             * The rest are Secondary External.
-             */
 
             File ext[] = ctx.getExternalFilesDirs(null);
             for (int i=1; i<=ext.length; i++) {
@@ -106,7 +111,11 @@ public class DeviceModel implements Serializable {
                 usedKb[i]   = humanize(free[i]);
                 freeKb[i]   = humanize(used[i]);
                 totalKb[i]  = humanize(total[i]);
-                isAvail[i] = (i == 1) && Environment.MEDIA_MOUNTED.equals(Environment.getStorageState(ext[i-1]));
+
+                String state = Environment.getStorageState(ext[i-1]);
+                isAvail[i]  = !emulated
+                            && Environment.MEDIA_MOUNTED.equals(state)
+                            && !(Environment.MEDIA_MOUNTED_READ_ONLY.equals(state));
             }
 
         } else {
@@ -121,23 +130,14 @@ public class DeviceModel implements Serializable {
             totalKb[1]  = humanize(total[1]);
 
             String state = Environment.getExternalStorageState();
-            isAvail[1] = Environment.MEDIA_MOUNTED.equals(state);
+            isAvail[1]  = !emulated
+                        && Environment.MEDIA_MOUNTED.equals(state)
+                        && !(Environment.MEDIA_MOUNTED_READ_ONLY.equals(state));
 
         }
 
         if (HammerActivity.BETA)
             Log.i("DeviceModel", "SDK Version = "+android.os.Build.VERSION.SDK);
-
-        if (SDK > 10) {
-            /**
-             * Starting with 3.0 Honeycomb we have emulated primary.
-             * This means that we only need to write over the internal
-             * storage because they both map to the same memory card.
-             */
-            if (Environment.isExternalStorageEmulated()) {
-                isAvail[1] = false;
-            }
-        }
     }
 
     /**
@@ -149,8 +149,8 @@ public class DeviceModel implements Serializable {
     private long getFree(String path) {
         StatFs statFs = new StatFs(path);
         return (SDK >= 18)  /** starting with 4.3 JellyBean */
-                ? statFs.getAvailableBlocksLong() * statFs.getBlockSizeLong();
-                : (long)statFs.getAvailableBlocks() * (long)statFs.getBlockSize()
+                ? statFs.getAvailableBlocksLong() * statFs.getBlockSizeLong()
+                : (long)statFs.getAvailableBlocks() * (long)statFs.getBlockSize();
     }
 
     /**
@@ -162,8 +162,8 @@ public class DeviceModel implements Serializable {
     private long getTotal(String path) {
         StatFs statFs = new StatFs(path);
         return (SDK >= 18)  /** starting with 4.3 JellyBean */
-                ? statFs.getBlockCountLong() * statFs.getBlockSizeLong();
-                : (long)statFs.getBlockCount() * (long)statFs.getBlockSize()
+                ? statFs.getBlockCountLong() * statFs.getBlockSizeLong()
+                : (long)statFs.getBlockCount() * (long)statFs.getBlockSize();
     }
 
 
