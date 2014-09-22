@@ -110,7 +110,8 @@ public class WriteRandomAsync extends AsyncTask<Void, Integer, String> {
         RandomAccessFile output = null;
         File file = ctx.getFileStreamPath(HammerActivity.FILENAME);
         long s = file.length();
-        Log.i("WriteRandomAsync", "file.length = "+s);
+        if (HammerActivity.BETA)
+            Log.i("WriteRandomAsync", "file.length = "+s);
 
         try {
             if (!file.exists()) {
@@ -165,7 +166,8 @@ public class WriteRandomAsync extends AsyncTask<Void, Integer, String> {
             try {
                 new Random().nextBytes(buffer);
 
-                Log.i("WriteRandomAsync", "bytes: "+output.length());
+                if (HammerActivity.BETA)
+                    Log.i("WriteRandomAsync", "bytes: "+output.length());
                 output.skipBytes((int)output.length());
 
                 while (!(output == null)) {

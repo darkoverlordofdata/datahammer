@@ -72,21 +72,29 @@ public class DeviceModel implements Serializable {
 
         StatFs statFs;
 
+
         /**
          * Internal Storage
          */
+
         path[0]     = Environment.getDataDirectory().getAbsolutePath();
         statFs      = new StatFs(path[0]);
 
         store[0]    = path[0];
-        total[0]    = (statFs.getBlockCount() * statFs.getBlockSize());
-        free[0]     = (statFs.getAvailableBlocks() * statFs.getBlockSize());
+        if (Integer.valueOf(android.os.Build.VERSION.SDK) < 18) {
+            // use deprecated api
+            total[0]    = (long)statFs.getBlockCount() * (long)statFs.getBlockSize();
+            free[0]     = (long)statFs.getAvailableBlocks() * (long)statFs.getBlockSize();
+        } else {
+            // use new api
+            total[0]    = statFs.getBlockCountLong() * statFs.getBlockSizeLong();
+            free[0]     = statFs.getAvailableBlocksLong() * statFs.getBlockSizeLong();
+        }
         used[0]     = total[0] - free[0];
         freeKb[0]   = humanize(used[0]);
         usedKb[0]   = humanize(free[0]);
         totalKb[0]  = humanize(total[0]);
         isAvail[0]  = true;
-
         /**
          * External Storage
          */
@@ -97,8 +105,15 @@ public class DeviceModel implements Serializable {
 
 
             store[1]    = path[1].replace(TAIL, "");
-            total[1]    = (statFs.getBlockCount() * statFs.getBlockSize());
-            free[1]     = (statFs.getAvailableBlocks() * statFs.getBlockSize());
+            if (Integer.valueOf(android.os.Build.VERSION.SDK) < 18) {
+                // use deprecated api
+                total[1]    = (long)statFs.getBlockCount() * (long)statFs.getBlockSize();
+                free[1]     = (long)statFs.getAvailableBlocks() * (long)statFs.getBlockSize();
+            } else {
+                // use new api
+                total[1]    = statFs.getBlockCountLong() * statFs.getBlockSizeLong();
+                free[1]     = statFs.getAvailableBlocksLong() * statFs.getBlockSizeLong();
+            }
             used[1]     = total[1] - free[1];
             freeKb[1]   = humanize(used[1]);
             usedKb[1]   = humanize(free[1]);
@@ -116,8 +131,15 @@ public class DeviceModel implements Serializable {
                 statFs      = new StatFs(path[i]);
 
                 store[i]    = path[i].replace(TAIL, "");
-                total[i]    = (statFs.getBlockCount() * statFs.getBlockSize());
-                free[i]     = (statFs.getAvailableBlocks() * statFs.getBlockSize());
+                if (Integer.valueOf(android.os.Build.VERSION.SDK) < 18) {
+                    // use deprecated api
+                    total[i]    = (long)statFs.getBlockCount() * (long)statFs.getBlockSize();
+                    free[i]     = (long)statFs.getAvailableBlocks() * (long)statFs.getBlockSize();
+                } else {
+                    // use new api
+                    total[i]    = statFs.getBlockCountLong() * statFs.getBlockSizeLong();
+                    free[i]     = statFs.getAvailableBlocksLong() * statFs.getBlockSizeLong();
+                }
                 used[i]     = total[i] - free[i];
                 usedKb[i]   = humanize(free[i]);
                 freeKb[i]   = humanize(used[i]);

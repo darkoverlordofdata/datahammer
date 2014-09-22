@@ -2,9 +2,6 @@
 <resources>
 
     <string name="app_name">Data Hammer</string>
-    <string name="app_code">4</string>
-    <string name="app_version">0.4</string>
-    <string name="app_title">Data Hammer v0.3</string>
 
     <string name="app_descrip">
         Data Hammer overwrites all unused storage with random data.
