@@ -30,6 +30,8 @@ import java.text.DecimalFormat;
  */
 public class DeviceModel implements Serializable {
 
+    private static final int SDK = Integer.valueOf(android.os.Build.VERSION.SDK;
+
     private static final long serialVersionUID = 1L;
 
     private static final String TAIL = "/com.darkoverlordofdata.malleus/files";
@@ -44,7 +46,7 @@ public class DeviceModel implements Serializable {
     public long used[];            //  bytes used
     public long total[];           //  total bytes available
     public String path[];          //  absolute storage path
-    public String store[];         //  absolute storage path
+    public String store[];         //  absolute storage label
     public String freeKb[];        //  readable bytes free
     public String usedKb[];        //  readable bytes used
     public String totalKb[];       //  readable total bytes available
@@ -57,8 +59,8 @@ public class DeviceModel implements Serializable {
      */
     public DeviceModel(Context ctx) {
 
-        int count = (Integer.valueOf(android.os.Build.VERSION.SDK) < 19)
-                    ? 2 : ctx.getExternalFilesDirs(null).length+1;
+        /** starting with 4.4 KitKat */
+        int count = (SDK >= 19) ? ctx.getExternalFilesDirs(null).length+1 : 2;
 
         free    = new long[count];
         used    = new long[count];
@@ -70,26 +72,14 @@ public class DeviceModel implements Serializable {
         totalKb = new String[count];
         isAvail = new boolean[count];
 
-        StatFs statFs;
-
-
         /**
          * Internal Storage
          */
 
         path[0]     = Environment.getDataDirectory().getAbsolutePath();
-        statFs      = new StatFs(path[0]);
-
         store[0]    = path[0];
-        if (Integer.valueOf(android.os.Build.VERSION.SDK) < 18) {
-            // use deprecated api
-            total[0]    = (long)statFs.getBlockCount() * (long)statFs.getBlockSize();
-            free[0]     = (long)statFs.getAvailableBlocks() * (long)statFs.getBlockSize();
-        } else {
-            // use new api
-            total[0]    = statFs.getBlockCountLong() * statFs.getBlockSizeLong();
-            free[0]     = statFs.getAvailableBlocksLong() * statFs.getBlockSizeLong();
-        }
+        total[0]    = getTotal(path[0]);
+        free[0]     = getFree(path[0]);
         used[0]     = total[0] - free[0];
         freeKb[0]   = humanize(used[0]);
         usedKb[0]   = humanize(free[0]);
@@ -98,22 +88,33 @@ public class DeviceModel implements Serializable {
         /**
          * External Storage
          */
-        if (Integer.valueOf(android.os.Build.VERSION.SDK) < 19) {
+        if (SDK >= 19) {
+            /**
+             * starting with 4.4 KitKat there is an array of External Storage
+             * locations. The first corresponds to the Primary External.
+             * The rest are Secondary External.
+             */
+
+            File ext[] = ctx.getExternalFilesDirs(null);
+            for (int i=1; i<=ext.length; i++) {
+
+                path[i]     = ext[i-1].getAbsolutePath();
+                store[i]    = path[i].replace(TAIL, "");
+                total[i]    = getTotal(path[i]);
+                free[i]     = getFree(path[i]);
+                used[i]     = total[i] - free[i];
+                usedKb[i]   = humanize(free[i]);
+                freeKb[i]   = humanize(used[i]);
+                totalKb[i]  = humanize(total[i]);
+                isAvail[i] = (i == 1) && Environment.MEDIA_MOUNTED.equals(Environment.getStorageState(ext[i-1]));
+            }
+
+        } else {
 
             path[1]     = Environment.getExternalStorageDirectory().getAbsolutePath();
-            statFs      = new StatFs(path[1]);
-
-
             store[1]    = path[1].replace(TAIL, "");
-            if (Integer.valueOf(android.os.Build.VERSION.SDK) < 18) {
-                // use deprecated api
-                total[1]    = (long)statFs.getBlockCount() * (long)statFs.getBlockSize();
-                free[1]     = (long)statFs.getAvailableBlocks() * (long)statFs.getBlockSize();
-            } else {
-                // use new api
-                total[1]    = statFs.getBlockCountLong() * statFs.getBlockSizeLong();
-                free[1]     = statFs.getAvailableBlocksLong() * statFs.getBlockSizeLong();
-            }
+            total[1]    = getTotal(path[1]);
+            free[1]     = getFree(path[1]);
             used[1]     = total[1] - free[1];
             freeKb[1]   = humanize(used[1]);
             usedKb[1]   = humanize(free[1]);
@@ -122,41 +123,14 @@ public class DeviceModel implements Serializable {
             String state = Environment.getExternalStorageState();
             isAvail[1] = Environment.MEDIA_MOUNTED.equals(state);
 
-        } else { /** starting with KitKat */
-
-            File ext[] = ctx.getExternalFilesDirs(null);
-            for (int i=1; i<=ext.length; i++) {
-
-                path[i]     = ext[i-1].getAbsolutePath();
-                statFs      = new StatFs(path[i]);
-
-                store[i]    = path[i].replace(TAIL, "");
-                if (Integer.valueOf(android.os.Build.VERSION.SDK) < 18) {
-                    // use deprecated api
-                    total[i]    = (long)statFs.getBlockCount() * (long)statFs.getBlockSize();
-                    free[i]     = (long)statFs.getAvailableBlocks() * (long)statFs.getBlockSize();
-                } else {
-                    // use new api
-                    total[i]    = statFs.getBlockCountLong() * statFs.getBlockSizeLong();
-                    free[i]     = statFs.getAvailableBlocksLong() * statFs.getBlockSizeLong();
-                }
-                used[i]     = total[i] - free[i];
-                usedKb[i]   = humanize(free[i]);
-                freeKb[i]   = humanize(used[i]);
-                totalKb[i]  = humanize(total[i]);
-
-                String state = Environment.getStorageState(ext[i-1]);
-                isAvail[i] = Environment.MEDIA_MOUNTED.equals(state);
-                if (i > 1) isAvail[i] = false; // Secondary Storage is likely read-only...
-            }
         }
 
         if (HammerActivity.BETA)
             Log.i("DeviceModel", "SDK Version = "+android.os.Build.VERSION.SDK);
 
-        if (Integer.valueOf(android.os.Build.VERSION.SDK) > 10) {
+        if (SDK > 10) {
             /**
-             * Emulated primary:
+             * Starting with 3.0 Honeycomb we have emulated primary.
              * This means that we only need to write over the internal
              * storage because they both map to the same memory card.
              */
@@ -165,6 +139,34 @@ public class DeviceModel implements Serializable {
             }
         }
     }
+
+    /**
+     * Get Free byte count
+     *
+     * @param path
+     * @return
+     */
+    private long getFree(String path) {
+        StatFs statFs = new StatFs(path);
+        return (SDK >= 18)  /** starting with 4.3 JellyBean */
+                ? statFs.getAvailableBlocksLong() * statFs.getBlockSizeLong();
+                : (long)statFs.getAvailableBlocks() * (long)statFs.getBlockSize()
+    }
+
+    /**
+     * Get Total byte count
+     *
+     * @param path
+     * @return
+     */
+    private long getTotal(String path) {
+        StatFs statFs = new StatFs(path);
+        return (SDK >= 18)  /** starting with 4.3 JellyBean */
+                ? statFs.getBlockCountLong() * statFs.getBlockSizeLong();
+                : (long)statFs.getBlockCount() * (long)statFs.getBlockSize()
+    }
+
+
 
     public String analysis() {
         String res;
