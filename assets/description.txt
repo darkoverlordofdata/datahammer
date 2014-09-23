@@ -1,0 +1,25 @@
+When you sell your phone, be sure to protect your privacy.
+
+&nbsp;&nbsp;&bull;Run the recommended factory reset
+&nbsp;&nbsp;&bull;Install and run Data Hammer
+
+Data Hammer shreds, or overwrites your unused storage with random data, so your deleted files cannot be recovered.
+
+-- Don't Smash Your Phone, Use Data Hammer! --
+
+Root permissions not required.
+
+For FAQ and more, please visit:
+http://darkoverlordofdata.com/datahammer/
+Report bugs at:
+https://github.com/darkoverlordofdata/datahammer/issues
+
+
+
+
+
+
+
+
+
+

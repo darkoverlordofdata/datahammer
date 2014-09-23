@@ -48,6 +48,9 @@ public class DeviceModel implements Serializable {
     public String totalKb[];       //  readable total bytes available
     public boolean isAvail[];      //  is it available to us?
 
+    public long shredBytes;
+    public int shredBlocks;
+
     /**
      * Model version
      */
@@ -84,6 +87,9 @@ public class DeviceModel implements Serializable {
      * 
      */
     public DeviceModel(Context ctx) {
+
+        if (HammerActivity.BETA)
+            Log.i("DeviceModel", "SDK Version = "+android.os.Build.VERSION.SDK);
 
         boolean emulated = (isHoneyComb) && Environment.isExternalStorageEmulated();
         int count = (isKitKat) ? ctx.getExternalFilesDirs(null).length+1 : 2;
@@ -152,8 +158,12 @@ public class DeviceModel implements Serializable {
 
         }
 
-        if (HammerActivity.BETA)
-            Log.i("DeviceModel", "SDK Version = "+android.os.Build.VERSION.SDK);
+        shredBytes = 0;
+        for (int i=0; i < free.length; i++) {
+            shredBytes += (isAvail[i]) ? free[i] : 0;
+        }
+        shredBlocks = (int) (shredBytes / HammerActivity.PAGE_SIZE);
+
     }
 
     /**
@@ -164,6 +174,9 @@ public class DeviceModel implements Serializable {
      */
     private long getFree(String path) {
         StatFs statFs = new StatFs(path);
+
+        if (HammerActivity.BETA)
+            Log.i("DeviceModel", "Free on "+path+"="+statFs.getBlockSize());
         return (isJellyBean)
                 ? statFs.getAvailableBlocksLong() * statFs.getBlockSizeLong()
                 : (long)statFs.getAvailableBlocks() * (long)statFs.getBlockSize();
@@ -177,13 +190,35 @@ public class DeviceModel implements Serializable {
      */
     private long getTotal(String path) {
         StatFs statFs = new StatFs(path);
+
+        if (HammerActivity.BETA)
+            Log.i("DeviceModel", "Free on "+path+"="+statFs.getBlockSize());
         return (isJellyBean)
                 ? statFs.getBlockCountLong() * statFs.getBlockSizeLong()
                 : (long)statFs.getBlockCount() * (long)statFs.getBlockSize();
     }
 
 
+    /**
+     * Estimated Time to run
+     * best guess is about 2 min per gb.
+     *
+     * @return
+     */
+    public String estimatedTime() {
+        int m = (int)(shredBytes/500000000);
+        return (m <= 1) ? "a minute" : m+" minutes";
+    }
 
+    public String totalSpace() {
+        return humanize(shredBytes);
+    }
+
+    /**
+     * Analyze the volumetrics
+     *
+     * @return
+     */
     public String analysis() {
         String res;
 
@@ -205,8 +240,10 @@ public class DeviceModel implements Serializable {
 
         }
         if (!isAvail[1]) {
-            res += " Your External storage is emulated on the Internal storage card.";
+//            res += " Your External storage is emulated on the Internal storage card.";
+            res += " Skipping emulated drives.";
         }
+        res += "Ready to shred " + totalSpace() + " of storage.\n";
         return res;
     }
     /**
@@ -222,6 +259,7 @@ public class DeviceModel implements Serializable {
 
     /**
      * Humanize the file size
+     * use KB, not KiB
      *
      * @param size
      * @return
@@ -229,12 +267,12 @@ public class DeviceModel implements Serializable {
     private static String humanize (long size)
     {
 
-        long Kb = 1  * 1024;
-        long Mb = Kb * 1024;
-        long Gb = Mb * 1024;
-        long Tb = Gb * 1024;
-        long Pb = Tb * 1024;
-        long Eb = Pb * 1024;
+        long Kb = 1  * 1000;
+        long Mb = Kb * 1000;
+        long Gb = Mb * 1000;
+        long Tb = Gb * 1000;
+        long Pb = Tb * 1000;
+        long Eb = Pb * 1000;
 
         if (size <  Kb)                 return format2(        size     ) + " byte";
         if (size >= Kb && size < Mb)    return format2((double)size / Kb) + " Kb";

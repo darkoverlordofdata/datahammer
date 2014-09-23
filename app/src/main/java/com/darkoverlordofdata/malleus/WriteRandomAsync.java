@@ -224,10 +224,13 @@ public class WriteRandomAsync extends AsyncTask<Void, Integer, String> {
      * @param progress
      */
     protected void onProgressUpdate(Integer... progress) {
-        ctrl.progress.setProgress(progress[0]);
-        if (HammerActivity.BETA)
-            if ((progress[0] % 10000) == 0)
+
+        if ((progress[0] % HammerActivity.PROGRESS) == 0) {
+            ctrl.progress.setProgress(progress[0]);
+            if (HammerActivity.BETA)
                 Log.i("onProgressUpdate", ""+progress[0]);
+        }
+
     }
 
     /**

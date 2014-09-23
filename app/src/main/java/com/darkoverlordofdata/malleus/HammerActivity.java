@@ -17,6 +17,7 @@ package com.darkoverlordofdata.malleus;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -34,12 +35,12 @@ import android.widget.TextView;
 public class HammerActivity extends ActionBarActivity {
 
     public static final int         DIALOG_WRITE_PROGRESS   = 0;
-    public static final int         DIALOG_DELETE_PROGRESS  = 1;
 
     /**
      * Configuration
      */
-    public static final int         THROTTLE                = 0;        // limit # of records to process
+    public static final int         THROTTLE                = 0;        // limit # of blocks to process
+    public static final int         PROGRESS                = 10000;    // progress update modulo
     public static final boolean     BETA                    = false;    // log status messages
     public static final boolean     FREE_MEMORY             = true;     // delete the files when we're done
     public static final int         PAGE_SIZE               = 1024 * 4;
@@ -117,21 +118,12 @@ public class HammerActivity extends ActionBarActivity {
         switch (id) {
 
             case DIALOG_WRITE_PROGRESS:
+
                 progress = new ProgressDialog(this, R.style.MalleusDialog);
                 progress.setMessage("Shredding...");
                 progress.setIndeterminate(false);
-                progress.setMax(100);
-                progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                progress.setCancelable(false);
-                progress.show();
-                return progress;
-
-            case DIALOG_DELETE_PROGRESS:
-                progress = new ProgressDialog(this, R.style.MalleusDialog);
-                progress.setMessage("Cleanup...");
-                progress.setIndeterminate(false);
-                progress.setMax(100);
-                progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progress.setMax(model.shredBlocks);
+                progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                 progress.setCancelable(false);
                 progress.show();
                 return progress;
@@ -148,8 +140,34 @@ public class HammerActivity extends ActionBarActivity {
      */
     public void hammerTime(View v) {
 
-        WriteRandomAsync task2 = new WriteRandomAsync().inject(model, view, this);
-        task2.execute();
+        final HammerActivity self = this;
+
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        //Yes button clicked
+                        WriteRandomAsync task = new WriteRandomAsync().inject(model, view, self);
+                        task.execute();
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        //No button clicked
+                        break;
+                }
+            }
+        };
+
+        String message =
+                "It will take about "+model.estimatedTime()+
+                " to shred "+model.totalSpace()+
+                ". Do you want to continue?";
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(message).setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
+
     }
 
     protected void showAbout() {
