@@ -29,7 +29,7 @@ public class HammerFragment extends Fragment {
 
     public TextView             analysis;
     public TextView             status;
-
+    private DeviceModel         model;
 
     /**
      * Update the main view
@@ -45,7 +45,7 @@ public class HammerFragment extends Fragment {
 
 
         View rootView = inflater.inflate(R.layout.fragment_hammer, container, false);
-        DeviceModel model = (DeviceModel)getArguments().getSerializable("model");
+        model = (DeviceModel)getArguments().getSerializable("model");
 
         /* Bind all of the controls */
         ListView list = (ListView)rootView.findViewById(R.id.list);
@@ -59,5 +59,9 @@ public class HammerFragment extends Fragment {
         analysis.setText(model.analysis());
 
         return rootView;
+    }
+
+    public void reselect() {
+        analysis.setText(model.analysis());
     }
 }

@@ -34,8 +34,8 @@ public class DeviceModel implements Serializable {
      * Normalize the device storage locations
      * regardless of the SDK version:
      *
-     *  [0]     = Internal Storage
-     *  [1]     = Primary External Storage
+     *  [0]     = Internal Storage i.e. /system
+     *  [1]     = Primary External Storage i.e. /data or /storage/emulated/0
      *  [2...]  = Secondary External Storage (starting with KitKat)
      */
     public long free[];            //  bytes free
@@ -48,8 +48,8 @@ public class DeviceModel implements Serializable {
     public String totalKb[];       //  readable total bytes available
     public boolean isAvail[];      //  is it available to us?
 
-    public long shredBytes;
-    public int shredBlocks;
+    //public long shredBytes;
+    //public int shredBlocks;
 
     /**
      * Model version
@@ -80,6 +80,16 @@ public class DeviceModel implements Serializable {
      */
     private static final boolean isKitKat = (Integer.valueOf(android.os.Build.VERSION.SDK) >= 19);
 
+    /**
+     * Internal and external storage share the memory device. Internal storage looks small, but
+     * can actually allocate the entire storage.
+     *
+     *  1 We don't want to write to both, that is double effort
+     *  2 A progress bar that depends on internal storage size doesn't work correctly.
+     *  Therefore, only process the external storage.
+     *
+     */
+    private boolean emulated;
 
     /**
      * DeviceModel
@@ -91,7 +101,7 @@ public class DeviceModel implements Serializable {
         if (HammerActivity.BETA)
             Log.i("DeviceModel", "SDK Version = "+android.os.Build.VERSION.SDK);
 
-        boolean emulated = (isHoneyComb) && Environment.isExternalStorageEmulated();
+        emulated = (isHoneyComb) && Environment.isExternalStorageEmulated();
         int count = (isKitKat) ? ctx.getExternalFilesDirs(null).length+1 : 2;
 
         free    = new long[count];
@@ -107,7 +117,7 @@ public class DeviceModel implements Serializable {
         /**
          * Internal Storage
          */
-        path[0]     = Environment.getDataDirectory().getAbsolutePath();
+        path[0] = Environment.getRootDirectory().getAbsolutePath();
         store[0]    = path[0];
         total[0]    = getTotal(path[0]);
         free[0]     = getFree(path[0]);
@@ -115,11 +125,23 @@ public class DeviceModel implements Serializable {
         freeKb[0]   = humanize(used[0]);
         usedKb[0]   = humanize(free[0]);
         totalKb[0]  = humanize(total[0]);
-        isAvail[0]  = true;
+        isAvail[0]  = !emulated;
+        if (HammerActivity.BETA) dump(0);
 
         /**
          * External Storage
          */
+//        path[1]     = Environment.getDataDirectory().getAbsolutePath();
+//        store[1]    = path[1];
+//        total[1]    = getTotal(path[1]);
+//        free[1]     = getFree(path[1]);
+//        used[1]     = total[1] - free[1];
+//        freeKb[1]   = humanize(used[1]);
+//        usedKb[1]   = humanize(free[1]);
+//        totalKb[1]  = humanize(total[1]);
+//        isAvail[1]  = true;
+//        if (HammerActivity.BETA) dump(0);
+
         if (isKitKat) {
 
             File ext[] = ctx.getExternalFilesDirs(null);
@@ -135,9 +157,10 @@ public class DeviceModel implements Serializable {
                 totalKb[i]  = humanize(total[i]);
 
                 String state = Environment.getStorageState(ext[i-1]);
-                isAvail[i]  = !emulated
-                            && Environment.MEDIA_MOUNTED.equals(state)
+                isAvail[i]  = Environment.MEDIA_MOUNTED.equals(state)
                             && !(Environment.MEDIA_MOUNTED_READ_ONLY.equals(state));
+                if (HammerActivity.BETA) dump(i);
+
             }
 
         } else {
@@ -152,17 +175,40 @@ public class DeviceModel implements Serializable {
             totalKb[1]  = humanize(total[1]);
 
             String state = Environment.getExternalStorageState();
-            isAvail[1]  = !emulated
-                        && Environment.MEDIA_MOUNTED.equals(state)
+            isAvail[1]  = Environment.MEDIA_MOUNTED.equals(state)
                         && !(Environment.MEDIA_MOUNTED_READ_ONLY.equals(state));
+            if (HammerActivity.BETA) dump(1);
 
         }
 
-        shredBytes = 0;
+
+    }
+    public String getFreeBytesKb() {
+        return humanize(getFreeBytes());
+    }
+
+    public long getFreeBytes() {
+        long freeBytes = 0;
         for (int i=0; i < free.length; i++) {
-            shredBytes += (isAvail[i]) ? free[i] : 0;
+            freeBytes += (isAvail[i]) ? free[i] : 0;
         }
-        shredBlocks = (int) (shredBytes / HammerActivity.PAGE_SIZE);
+        return freeBytes;
+    }
+    public int getFreeBlocks() {
+        return (int) (getFreeBytes() / HammerActivity.PAGE_SIZE);
+    }
+    /**
+     *
+     * @param ix
+     */
+    private void dump(int ix) {
+
+        Log.i("DeviceModel", "free["+ix+"]    = "+free[ix]);
+        Log.i("DeviceModel", "used["+ix+"]    = "+used[ix]);
+        Log.i("DeviceModel", "total["+ix+"]   = "+total[ix]);
+        Log.i("DeviceModel", "path["+ix+"]    = "+path[ix]);
+        Log.i("DeviceModel", "store["+ix+"]   = "+store[ix]);
+        Log.i("DeviceModel", "isAvail["+ix+"] = "+isAvail[ix]);
 
     }
 
@@ -206,12 +252,8 @@ public class DeviceModel implements Serializable {
      * @return
      */
     public String estimatedTime() {
-        int m = (int)(shredBytes/500000000);
+        int m = (int)(getFreeBytes()/500000000);
         return (m <= 1) ? "a minute" : m+" minutes";
-    }
-
-    public String totalSpace() {
-        return humanize(shredBytes);
     }
 
     /**
@@ -224,26 +266,27 @@ public class DeviceModel implements Serializable {
 
         switch (path.length) {
             case 0:
-                res = "Impossible - you have no storage.";
+                res = "Impossible - you have no storage.\n";
                 break;
 
             case 1:
-                res = "You have Internal Storage only.";
+                res = "You have Internal Storage only.\n";
                 break;
 
             case 2:
-                res = "You have Internal and External storage.";
+                res = "You have Internal and External storage.\n";
                 break;
 
             default:
-                res = "You have Internal, External Primary and Secondary storage.";
+                res = "You have Internal, External Primary and Secondary storage.\n";
 
         }
-        if (!isAvail[1]) {
-//            res += " Your External storage is emulated on the Internal storage card.";
-            res += " Skipping emulated drives.";
+        if (emulated) {
+            if (isAvail[0]) {
+                res += "You should leave the /system folder deselected for devices with emulated external storage.\n";
+            }
         }
-        res += "Ready to shred " + totalSpace() + " of storage.\n";
+        res += "Ready to shred " + humanize(getFreeBytes()) + " of storage.\n";
         return res;
     }
     /**
@@ -259,20 +302,20 @@ public class DeviceModel implements Serializable {
 
     /**
      * Humanize the file size
-     * use KB, not KiB
+     * Expressed in KiBies
      *
      * @param size
      * @return
      */
-    private static String humanize (long size)
+    public static String humanize (long size)
     {
 
-        long Kb = 1  * 1000;
-        long Mb = Kb * 1000;
-        long Gb = Mb * 1000;
-        long Tb = Gb * 1000;
-        long Pb = Tb * 1000;
-        long Eb = Pb * 1000;
+        long Kb = 1  * 1024;
+        long Mb = Kb * 1024;
+        long Gb = Mb * 1024;
+        long Tb = Gb * 1024;
+        long Pb = Tb * 1024;
+        long Eb = Pb * 1024;
 
         if (size <  Kb)                 return format2(        size     ) + " byte";
         if (size >= Kb && size < Mb)    return format2((double)size / Kb) + " Kb";

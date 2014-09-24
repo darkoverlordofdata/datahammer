@@ -34,7 +34,7 @@ import java.util.Random;
  */
 public class WriteRandomAsync extends AsyncTask<Void, Integer, String> {
 
-    private int                 total;
+    private int                 count;
     private long                startTime;
     private long                endTime;
     private byte[]              buffer = new byte[HammerActivity.PAGE_SIZE];
@@ -67,14 +67,14 @@ public class WriteRandomAsync extends AsyncTask<Void, Integer, String> {
     protected String doInBackground(Void... params) {
 
         startTime = System.currentTimeMillis();
-        total = 0;
+        count = 0;
 
         if (model.isAvail[0]) {
-            total += writeInternal();
+            writeInternal();
         }
         for (int i = 1; i < model.path.length; i++) {
             if (model.isAvail[i]) {
-                total += writeExternal(model.path[i]);
+                writeExternal(model.path[i]);
             }
         }
         endTime = System.currentTimeMillis();
@@ -156,7 +156,6 @@ public class WriteRandomAsync extends AsyncTask<Void, Integer, String> {
      */
     private int shred(File file, RandomAccessFile output) {
 
-        int count = 0;
         try {
 
             /**
@@ -243,9 +242,10 @@ public class WriteRandomAsync extends AsyncTask<Void, Integer, String> {
         String duration = String.format("%02d:%02d", seconds / 60, seconds % 60);
 
         ctrl.dismissDialog(HammerActivity.DIALOG_WRITE_PROGRESS);
-        view.status.setText("Shredded "+(total*4)+"kb in "+duration+" mm:ss");
+        long total = (long)count * 4096;
+        view.status.setText("Shredded "+DeviceModel.humanize(total)+" in "+duration+" mm:ss");
         if (HammerActivity.BETA) 
-            Log.i("onPostExecute", "Count = "+total);
+            Log.i("onPostExecute", "Count = "+count);
     }
 
 

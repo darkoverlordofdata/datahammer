@@ -122,7 +122,7 @@ public class HammerActivity extends ActionBarActivity {
                 progress = new ProgressDialog(this, R.style.MalleusDialog);
                 progress.setMessage("Shredding...");
                 progress.setIndeterminate(false);
-                progress.setMax(model.shredBlocks);
+                progress.setMax(model.getFreeBlocks());
                 progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                 progress.setCancelable(false);
                 progress.show();
@@ -133,11 +133,15 @@ public class HammerActivity extends ActionBarActivity {
         }
     }
 
-    /**
-     * It's Hammer Time!
-     *
-     * @param view
-     */
+    public void reselect(View v) {
+        view.reselect();
+    }
+
+        /**
+         * It's Hammer Time!
+         *
+         * @param view
+         */
     public void hammerTime(View v) {
 
         final HammerActivity self = this;
@@ -161,7 +165,7 @@ public class HammerActivity extends ActionBarActivity {
 
         String message =
                 "It will take about "+model.estimatedTime()+
-                " to shred "+model.totalSpace()+
+                " to shred "+model.getFreeBytesKb()+
                 ". Do you want to continue?";
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
